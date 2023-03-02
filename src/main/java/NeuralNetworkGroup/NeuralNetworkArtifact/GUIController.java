@@ -1,6 +1,7 @@
 package NeuralNetworkGroup.NeuralNetworkArtifact;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Screen;
@@ -66,6 +67,6 @@ public class GUIController {
     }
 
     private void mouseMoved(final MouseEvent e) {
-        
+        renderer.mouseMoved(new Point2D(e.getX(),e.getY()));
     }
 }

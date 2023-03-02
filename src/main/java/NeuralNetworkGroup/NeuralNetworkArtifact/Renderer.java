@@ -1,4 +1,7 @@
 package NeuralNetworkGroup.NeuralNetworkArtifact;
+import Drawables.RaceTrack;
+import Vectors.Vector2;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -9,13 +12,17 @@ public final class Renderer {
     private final ResizeableCanvas resizeableCanvas;
 
     private final GraphicsContext gc;
+    
+    private RaceTrack raceTrack;
 
     // constructor
     Renderer(ResizeableCanvas resizeableCanvas) {
         // Set Debugging options for overlay
     	this.resizeableCanvas = resizeableCanvas;
     	gc = resizeableCanvas.getGraphicsContext2D();
+    	raceTrack = new RaceTrack(Color.GRAY, new Vector2(GUIController.getCanvasWidth()/2, GUIController.getCanvasHeight()/2));
     	System.out.println("initialized Renderer:");
+    	
     }
 
     // binds the anchor pane width/height to the canvas width/height
@@ -33,6 +40,7 @@ public final class Renderer {
     public void render() {
         gc.save();
 
+        raceTrack.draw(gc);
 
         gc.restore();
     }
@@ -42,13 +50,17 @@ public final class Renderer {
         // clear entire canvas and fill it with background color
         gc.setFill(Color.GRAY);
         gc.fillRect(0, 0, resizeableCanvas.getWidth(), resizeableCanvas.getHeight());
-        gc.setStroke(Color.RED);
-        gc.strokeLine(0, 0, resizeableCanvas.getWidth(), resizeableCanvas.getHeight());
-        gc.strokeLine(resizeableCanvas.getWidth(), 0, 0, resizeableCanvas.getHeight());
+//        gc.setStroke(Color.RED);
+//        gc.strokeLine(0, 0, resizeableCanvas.getWidth(), resizeableCanvas.getHeight());
+//        gc.strokeLine(resizeableCanvas.getWidth(), 0, 0, resizeableCanvas.getHeight());
     }
 
     public void onResize() {
     	
         
+    }
+    
+    public void mouseMoved(Point2D mousePosition){
+        raceTrack.mouseMoved(mousePosition);
     }
 }
