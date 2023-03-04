@@ -1,0 +1,104 @@
+package Drawables;
+
+import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
+import NeuralNetworkGroup.NeuralNetworkArtifact.GUIController;
+import Vectors.Vector2;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
+
+public class Car extends DrawableObject{
+    
+    private Vector2 velocity,desiredDirection;
+    private double acceleration;
+    private static final double deceleration = -20;
+    private double rotationSpeed;
+    private static double width,height;
+    private static final double maxVelocity = 300;
+
+    public Car(Color baseColor, Vector2 centerPoint) {
+        super(baseColor, centerPoint);
+        velocity = new Vector2(1, 1);
+        desiredDirection = new Vector2(1, 1);
+        desiredDirection.setMagnitude(10);
+    }
+    
+    public static void setSizes(){
+        height = GUIController.getCanvasWidth()*0.02;
+        width = height*0.6;
+    }
+
+    @Override
+    public void update(double secondsSinceLastFrame) {
+        if(secondsSinceLastFrame<1) {
+            move(secondsSinceLastFrame);
+        }
+    }
+    
+    private void move(double secondsSinceLastFrame) {
+        centerPoint = Vector2.add(centerPoint, Vector2.getScaledVector(velocity, secondsSinceLastFrame));
+        desiredDirection.setAngle(desiredDirection.getAngle()+rotationSpeed*secondsSinceLastFrame);
+        
+        
+        double speed = velocity.getMagnitude() + (acceleration+deceleration)*secondsSinceLastFrame;
+        if(speed < 0) {
+            speed = 0;
+        }
+        velocity = Vector2.add(velocity, Vector2.getScaledVector(desiredDirection, 1));
+        velocity.setMagnitude(speed);
+        if(velocity.getMagnitude() > maxVelocity) {
+            velocity.setMagnitude(maxVelocity);
+        }
+    }
+    
+
+    @Override
+    public void draw(GraphicsContext gc) {
+        gc.setFill(baseColor);
+        gc.translate(centerPoint.getX(), centerPoint.getY());
+        gc.rotate(-desiredDirection.getAngleInDegrees());
+        gc.fillRect(-width/2, -height/2, width, height);
+        gc.rotate(desiredDirection.getAngleInDegrees());
+        gc.translate(-centerPoint.getX(), -centerPoint.getY());
+        
+        drawVectors(gc);
+    }
+    
+    private void drawVectors(GraphicsContext gc) {
+        gc.setStroke(Constants.VECTOR_COLOR);
+        gc.strokeLine(centerPoint.getX(), centerPoint.getY(), centerPoint.getX() + desiredDirection.getX(), centerPoint.getY() + desiredDirection.getY());
+        gc.setStroke(Color.GREEN);
+        gc.strokeLine(centerPoint.getX(), centerPoint.getY(), centerPoint.getX() + velocity.getX(), centerPoint.getY() + velocity.getY());
+    }
+
+    @Override
+    public void repositionGeometryOnResize() {
+        
+        
+    }
+    
+    public void keyPressed(KeyEvent e) {
+        if(e.getText().equals("w")) {
+            acceleration = 60;
+        }else if(e.getText().equals("s")) {
+            acceleration = -80;
+        }else if(e.getText().equals("a")) {
+            rotationSpeed = -120;
+        }else if(e.getText().equals("d")) {
+            rotationSpeed = 120;
+        }
+    }
+    
+    public void keyReleased(KeyEvent e) {
+        if(e.getText().equals("w")) {
+            acceleration = 0;
+        }else if(e.getText().equals("s")) {
+            acceleration = 0;
+        }else if(e.getText().equals("a")) {
+            rotationSpeed = 0;
+        }else if(e.getText().equals("d")) {
+            rotationSpeed = 0;
+        }
+    }
+    
+}

@@ -1,6 +1,5 @@
 package NeuralNetworkGroup.NeuralNetworkArtifact;
 import Drawables.RaceTrack;
-import Vectors.Vector2;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.AnchorPane;
@@ -20,7 +19,7 @@ public final class Renderer {
         // Set Debugging options for overlay
     	this.resizeableCanvas = resizeableCanvas;
     	gc = resizeableCanvas.getGraphicsContext2D();
-    	raceTrack = new RaceTrack(Color.GRAY, new Vector2(GUIController.getCanvasWidth()/2, GUIController.getCanvasHeight()/2));
+    	raceTrack = RaceTrack.getRaceTrackInstance();
     	System.out.println("initialized Renderer:");
     	
     }
@@ -33,7 +32,7 @@ public final class Renderer {
 
     // the update method (called once per tick)
     public void update(final double secondsSinceLastFrame) {
-
+        raceTrack.update(secondsSinceLastFrame);
     }
 
     // the render method (called once per tick)

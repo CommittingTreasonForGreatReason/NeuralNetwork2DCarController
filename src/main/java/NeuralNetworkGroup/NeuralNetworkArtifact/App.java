@@ -4,9 +4,12 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+
+import Drawables.RaceTrack;
 
 /**
  * JavaFX App
@@ -21,6 +24,8 @@ public class App extends Application {
         stage.setTitle("1000 IQ Car");
         stage.setScene(scene);
         stage.show();
+        scene.setOnKeyPressed(this::keyPressed);
+        scene.setOnKeyReleased(this::keyReleased);
     }
 
     static void setRoot(String fxml) throws IOException {
@@ -35,5 +40,11 @@ public class App extends Application {
     public static void main(String[] args) {
         launch();
     }
-
+    
+    private void keyPressed(KeyEvent e) {
+        RaceTrack.getRaceTrackInstance().keyPressed(e);
+    }
+    private void keyReleased(KeyEvent e) {
+        RaceTrack.getRaceTrackInstance().keyReleased(e);
+    }
 }
