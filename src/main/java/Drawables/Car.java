@@ -1,44 +1,55 @@
 package Drawables;
 
+import java.util.ArrayList;
+
 import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
 import NeuralNetworkGroup.NeuralNetworkArtifact.GUIController;
 import Vectors.Vector2;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class Car extends DrawableObject{
     
     private Vector2 velocity,desiredDirection;
+    private Rectangle hitBoxRectangle;
     private double acceleration;
     private static final double deceleration = -20;
     private double rotationSpeed;
     private static double width,height;
     private static final double maxVelocity = 300;
+    
+    private boolean isCrashed = false;
 
-    public Car(Color baseColor, Vector2 centerPoint) {
-        super(baseColor, centerPoint);
+    public Car(Vector2 centerPoint) {
+        super(Constants.CAR_COLOR, centerPoint);
         velocity = new Vector2(1, 1);
         desiredDirection = new Vector2(1, 1);
         desiredDirection.setMagnitude(10);
+        hitBoxRectangle = new Rectangle(centerPoint.getX()-width/2,centerPoint.getY()-width/2,width,width);
     }
     
     public static void setSizes(){
         height = GUIController.getCanvasWidth()*0.02;
         width = height*0.6;
     }
+    
+    public boolean isCrashed() {
+        return isCrashed;
+    }
 
     @Override
     public void update(double secondsSinceLastFrame) {
-        if(secondsSinceLastFrame<1) {
+        if(secondsSinceLastFrame<1 && !isCrashed) {
             move(secondsSinceLastFrame);
         }
+        hitBoxRectangle = new Rectangle(centerPoint.getX()-width/2,centerPoint.getY()-width/2,width,width);
     }
     
     private void move(double secondsSinceLastFrame) {
         centerPoint = Vector2.add(centerPoint, Vector2.getScaledVector(velocity, secondsSinceLastFrame));
         desiredDirection.setAngle(desiredDirection.getAngle()+rotationSpeed*secondsSinceLastFrame);
-        
         
         double speed = velocity.getMagnitude() + (acceleration+deceleration)*secondsSinceLastFrame;
         if(speed < 0) {
@@ -51,6 +62,16 @@ public class Car extends DrawableObject{
         }
     }
     
+    public void updateCrashed(ArrayList<GridCell> wallGridCells) {
+        for (GridCell wallGridCell : wallGridCells) {
+            if(wallGridCell.intersects(hitBoxRectangle)) {
+                 isCrashed = true;
+                 baseColor = Constants.CAR_CRASHED_COLOR;
+                 return;
+            }
+        }
+    }
+    
 
     @Override
     public void draw(GraphicsContext gc) {
@@ -60,6 +81,10 @@ public class Car extends DrawableObject{
         gc.fillRect(-width/2, -height/2, width, height);
         gc.rotate(desiredDirection.getAngleInDegrees());
         gc.translate(-centerPoint.getX(), -centerPoint.getY());
+        
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(3);
+        gc.strokeRect(hitBoxRectangle.getX(), hitBoxRectangle.getY(), hitBoxRectangle.getWidth(), hitBoxRectangle.getHeight());
         
         drawVectors(gc);
     }

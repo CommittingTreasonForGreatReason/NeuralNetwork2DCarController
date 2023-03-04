@@ -21,16 +21,25 @@ public class GridCell extends DrawableObject{
         return rectangle.contains(point2d);
     }
     
+    public boolean intersects(Rectangle rect) {
+        Rectangle rectangle = new Rectangle(centerPoint.getX()-size/2, centerPoint.getY()-size/2, size, size);
+        return rectangle.intersects(rect.getX(),rect.getY(),rect.getWidth(),rect.getHeight());
+    }
+    
+    public GridCell(Color baseColor, Vector2 centerPoint) {
+        super(baseColor, centerPoint);
+    }
+    
     public void setWall(boolean isWall) {
         this.isWall = isWall;
     }
     
+    public boolean isWall() {
+        return isWall;
+    }
+    
     public static double getSize() {
         return size;
-    }
-
-    public GridCell(Color baseColor, Vector2 centerPoint) {
-        super(baseColor, centerPoint);
     }
 
     @Override

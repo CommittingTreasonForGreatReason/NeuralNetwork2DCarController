@@ -1,5 +1,7 @@
 package Drawables;
 
+import java.util.ArrayList;
+
 import Vectors.Vector2;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -10,6 +12,7 @@ import javafx.scene.paint.Color;
 public class Grid extends DrawableObject{
     
     private GridCell[][] gridCells;
+    private ArrayList<GridCell> wallGridCells = new ArrayList<GridCell>();
     private GridCell hoverGridCell;
     private double size;
 
@@ -31,10 +34,17 @@ public class Grid extends DrawableObject{
             }
         }
     }
+    
+    public GridCell[][] getGridCells() {
+        return gridCells;
+    }
+    
+    public ArrayList<GridCell> getWallGridCells() {
+        return wallGridCells;
+    }
 
     @Override
     public void update(double secondsSinceLastFrame) {
-        
         
     }
 
@@ -63,9 +73,17 @@ public class Grid extends DrawableObject{
             return;
         }
         if(e.getButton() == MouseButton.PRIMARY) {
-            hoverGridCell.setWall(true);
+            if(!wallGridCells.contains(hoverGridCell)) {
+                wallGridCells.add(hoverGridCell);
+                hoverGridCell.setWall(true);
+                System.out.println(wallGridCells.size());
+            }
         }else if(e.getButton() == MouseButton.SECONDARY){
-            hoverGridCell.setWall(false);
+            if(wallGridCells.contains(hoverGridCell)) {
+                wallGridCells.remove(hoverGridCell);
+                hoverGridCell.setWall(false);
+                System.out.println(wallGridCells.size());
+            }
         }
     }
     
