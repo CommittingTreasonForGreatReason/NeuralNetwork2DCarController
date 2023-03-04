@@ -5,6 +5,7 @@ import Vectors.Vector2;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 public class RaceTrack extends DrawableObject{
@@ -59,9 +60,17 @@ public class RaceTrack extends DrawableObject{
         
     }
     
+    public void mouseClicked(final MouseEvent e) {
+        grid.tryClickBoardCell(e);
+    }
+    
+    public void mouseDragged(final MouseEvent e) {
+        grid.trySetHoverGridCell(new Point2D(e.getX(),e.getY()));
+        grid.tryClickBoardCell(e);
+    }
+    
     public void mouseMoved(Point2D mousePosition){
-        angle = -Math.atan2(mousePosition.getX()-centerPoint.getX(),mousePosition.getY()-centerPoint.getY())+Math.PI/2;
-        vector2.setAngle(angle);
+        grid.trySetHoverGridCell(mousePosition);
     }
     
     public void keyPressed(KeyEvent e) {

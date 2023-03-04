@@ -41,6 +41,7 @@ public class GUIController {
         
         resizeableCanvas.setOnMouseClicked(this::mouseClicked);
         resizeableCanvas.setOnMouseMoved(this::mouseMoved);
+        resizeableCanvas.setOnMouseDragged(this::mouseDragged);
 
         // start the main loop
         timer.start();
@@ -63,7 +64,10 @@ public class GUIController {
     }
     
     private void mouseClicked(final MouseEvent e) {
-    	
+        renderer.mouseClicked(e);
+    }
+    private void mouseDragged(final MouseEvent e) {
+        renderer.mouseDragged(e);
     }
 
     private void mouseMoved(final MouseEvent e) {

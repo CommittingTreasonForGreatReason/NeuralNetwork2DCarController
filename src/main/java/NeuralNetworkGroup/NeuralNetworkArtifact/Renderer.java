@@ -2,6 +2,7 @@ package NeuralNetworkGroup.NeuralNetworkArtifact;
 import Drawables.RaceTrack;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
@@ -57,6 +58,14 @@ public final class Renderer {
     public void onResize() {
     	
         
+    }
+    
+    public void mouseClicked(final MouseEvent e) {
+        raceTrack.mouseClicked(e);
+    }
+    
+    public void mouseDragged(final MouseEvent e) {
+        raceTrack.mouseDragged(e);
     }
     
     public void mouseMoved(Point2D mousePosition){

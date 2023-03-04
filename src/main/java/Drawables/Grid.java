@@ -1,12 +1,16 @@
 package Drawables;
 
 import Vectors.Vector2;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 public class Grid extends DrawableObject{
     
     private GridCell[][] gridCells;
+    private GridCell hoverGridCell;
     private double size;
 
     public Grid(Color baseColor, Vector2 centerPoint, double size) {
@@ -43,12 +47,37 @@ public class Grid extends DrawableObject{
                 gridCells[i][j].draw(gc);
             }
         }
+        if(hoverGridCell!=null) {
+            hoverGridCell.drawHover(gc);
+        }
     }
 
     @Override
     public void repositionGeometryOnResize() {
         
         
+    }
+    
+    public void tryClickBoardCell(final MouseEvent e) {
+        if(hoverGridCell==null) {
+            return;
+        }
+        if(e.getButton() == MouseButton.PRIMARY) {
+            hoverGridCell.setWall(true);
+        }else if(e.getButton() == MouseButton.SECONDARY){
+            hoverGridCell.setWall(false);
+        }
+    }
+    
+    public void trySetHoverGridCell(Point2D mousePosition) {
+        hoverGridCell = null;
+        for (int i = 0;i<gridCells.length;i++) {
+            for (int j = 0;j<gridCells[i].length;j++) {
+                if(gridCells[i][j].containsPoint(mousePosition)) {
+                    hoverGridCell = gridCells[i][j];
+                }
+            }
+        }
     }
 
 }
