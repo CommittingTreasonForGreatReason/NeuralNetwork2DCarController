@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-import Drawables.RaceTrack;
+import drawables.RaceTrack;
 
 /**
  * JavaFX App
@@ -17,6 +17,8 @@ import Drawables.RaceTrack;
 public class App extends Application {
 
     private static Scene scene;
+    private static GUIController guiController;
+    private static FXMLLoader fxmlLoader;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -26,6 +28,7 @@ public class App extends Application {
         stage.show();
         scene.setOnKeyPressed(this::keyPressed);
         scene.setOnKeyReleased(this::keyReleased);
+        guiController = fxmlLoader.getController();
     }
 
     static void setRoot(String fxml) throws IOException {
@@ -33,7 +36,7 @@ public class App extends Application {
     }
 
     private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+        fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
     }
 
@@ -42,7 +45,11 @@ public class App extends Application {
     }
     
     private void keyPressed(KeyEvent e) {
-        RaceTrack.getRaceTrackInstance().keyPressed(e);
+        if(e.getText().equals("b")) {
+            guiController.triggerSaveMapDialog();
+        }else {
+            RaceTrack.getRaceTrackInstance().keyPressed(e);
+        }
     }
     private void keyReleased(KeyEvent e) {
         RaceTrack.getRaceTrackInstance().keyReleased(e);

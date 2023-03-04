@@ -1,13 +1,13 @@
-package Drawables;
+package drawables;
 
 import java.util.ArrayList;
 
-import Vectors.Vector2;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import vectors.Vector2;
 
 public class Grid extends DrawableObject{
     
@@ -20,6 +20,13 @@ public class Grid extends DrawableObject{
         super(baseColor, centerPoint);
         this.size=size;
         initGrid(20);
+    }
+    
+    public int getRows(){
+        return gridCells.length;
+    }
+    public int getColumns(){
+        return gridCells[0].length;
     }
     
     private void initGrid(int gridResolution) {

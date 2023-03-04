@@ -1,14 +1,14 @@
-package Drawables;
+package drawables;
 
 import java.util.ArrayList;
 
-import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
-import NeuralNetworkGroup.NeuralNetworkArtifact.GUIController;
-import Vectors.Vector2;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import vectors.Vector2;
+import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
+import NeuralNetworkGroup.NeuralNetworkArtifact.GUIController;
 
 public class Car extends DrawableObject{
     

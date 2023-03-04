@@ -1,11 +1,11 @@
-package Drawables;
+package drawables;
 
-import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
-import Vectors.Vector2;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import vectors.Vector2;
+import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
 
 public class GridCell extends DrawableObject{
     

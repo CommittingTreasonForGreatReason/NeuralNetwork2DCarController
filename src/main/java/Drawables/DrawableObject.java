@@ -1,9 +1,9 @@
-package Drawables;
+package drawables;
 
 
-import Vectors.Vector2;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import vectors.Vector2;
 
 public abstract class DrawableObject {
 	protected Color baseColor;

@@ -1,4 +1,4 @@
-package Vectors;
+package vectors;
 
 public class Vector2 {
     private double x,y;

@@ -1,5 +1,5 @@
 package NeuralNetworkGroup.NeuralNetworkArtifact;
-import Drawables.RaceTrack;
+import drawables.RaceTrack;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
