@@ -16,15 +16,15 @@ public class RaceTrack extends DrawableObject{
     private static RaceTrack raceTrack;
     
     private Grid grid;
-    private Car car;
+    private final int amountOfCars = 100;
+    private ArrayList<Car> cars;
 
     private RaceTrack(Color baseColor, Vector2 centerPoint) {
         super(baseColor, centerPoint);
         System.out.println("initialized RaceTrack:");
         Car.setSizes();
-        car = new Car(new Vector2(centerPoint.getX(), centerPoint.getY()));
-        
         grid = new Grid(Color.GRAY, new Vector2(GUIController.getCanvasWidth()/2, GUIController.getCanvasHeight()/2));
+        spawnCars();
     }
     
     public static RaceTrack getRaceTrackInstance() {
@@ -34,28 +34,42 @@ public class RaceTrack extends DrawableObject{
         return raceTrack;
     }
     
+    public void spawnCars() {
+        ArrayList<GridCell> spawnGridCells = grid.getSpawnGridCells();
+        cars = new ArrayList<Car>();
+        for(int i = 0;i<amountOfCars;i++) {
+            Vector2 carPosition;
+            if(spawnGridCells.size()>0) {
+                int index = (int)(Math.random() * spawnGridCells.size());
+                Vector2 spawnPoint = spawnGridCells.get(index).centerPoint;
+                carPosition = new Vector2(spawnPoint.getX(),spawnPoint.getY());
+            }else {
+                carPosition = new Vector2(centerPoint.getX(), centerPoint.getY());
+            }
+            cars.add(new Car(carPosition));
+        }
+    }
+    
     public Grid getGrid() {
         return grid;
     }
     
-    public void spawnCars() {
-        ArrayList<GridCell> spawnGridCells = grid.getSpawnGridCells();
-        int index = (int)(Math.random() * spawnGridCells.size());
-        car.setCenterPoint(new Vector2(spawnGridCells.get(index).centerPoint.getX(),spawnGridCells.get(index).centerPoint.getY()));
-    }
-    
     @Override
     public void update(double secondsSinceLastFrame) {
-        car.update(secondsSinceLastFrame);
-        if(!car.isCrashed()) {
-            car.updateCrashed(grid.getWallGridCells());
+        for(Car car : cars) {
+            car.update(secondsSinceLastFrame);
+            if(!car.isCrashed()) {
+                car.updateCrashed(grid.getWallGridCells());
+            }
         }
     }
 
     @Override
     public void draw(GraphicsContext gc) {
         grid.draw(gc);
-        car.draw(gc);
+        for(Car car : cars) {
+            car.draw(gc);
+        }
     }
 
     @Override
@@ -77,14 +91,18 @@ public class RaceTrack extends DrawableObject{
     }
     
     public void keyPressed(KeyEvent e) {
-        car.keyPressed(e);
+        for(Car car : cars) {
+            car.keyPressed(e);
+        }
         if(e.getText().equals("x")) {
             grid.toggleShowGridLines();
         }
     }
     
     public void keyReleased(KeyEvent e) {
-        car.keyReleased(e);
+        for(Car car : cars) {
+            car.keyReleased(e);
+        }
     }
 
 }

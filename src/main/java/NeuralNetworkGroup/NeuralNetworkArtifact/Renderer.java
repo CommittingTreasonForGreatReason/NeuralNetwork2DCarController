@@ -1,5 +1,6 @@
 package NeuralNetworkGroup.NeuralNetworkArtifact;
 import drawables.RaceTrack;
+import fileAndData.MapFileManager;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
@@ -22,7 +23,7 @@ public final class Renderer {
     	gc = resizeableCanvas.getGraphicsContext2D();
     	raceTrack = RaceTrack.getRaceTrackInstance();
     	System.out.println("initialized Renderer:");
-    	
+    	MapFileManager.loadMap(RaceTrack.getRaceTrackInstance(), "map");
     }
 
     // binds the anchor pane width/height to the canvas width/height

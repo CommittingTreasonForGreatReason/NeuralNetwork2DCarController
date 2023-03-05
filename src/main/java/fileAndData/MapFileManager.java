@@ -17,6 +17,7 @@ public class MapFileManager {
     private static String directory = "src/main/resources/";
     
     public static void saveMap(RaceTrack racetrack, String fileName) {
+        System.out.println("saving map...");
         Grid grid = racetrack.getGrid();
         GridCell gridCells[][] = grid.getGridCells();
         BufferedImage mapBufferedImage = new BufferedImage(grid.getColumns(), grid.getRows(), BufferedImage.TYPE_INT_ARGB);
@@ -36,12 +37,14 @@ public class MapFileManager {
     }
     
     public static void loadMap(RaceTrack racetrack,String fileName) {
-       
+       System.out.println("loading map...");
         try {
             File mapImageFile = new File(directory+fileName+".png");
+            
             BufferedImage mapBufferedImage = ImageIO.read(mapImageFile);
             
             racetrack.getGrid().initGrid(mapBufferedImage.getHeight(), mapBufferedImage.getWidth(), GUIController.getCanvasWidth(), GUIController.getCanvasHeight());
+            
             GridCell[][] gridCells = racetrack.getGrid().getGridCells();
             ArrayList<GridCell> wallGridCells = racetrack.getGrid().getWallGridCells();
             ArrayList<GridCell> spawnGridCells = racetrack.getGrid().getSpawnGridCells();
@@ -66,7 +69,6 @@ public class MapFileManager {
             System.out.println("loaded Map :)");
             System.out.println("Resolution: " + mapBufferedImage.getWidth() + "/" + mapBufferedImage.getHeight());
         } catch (IOException e) {
-            
             e.printStackTrace();
         }
     }

@@ -68,6 +68,7 @@ public class GUIController {
         mapManagerPane.setVisible(false);
         // start the main loop
         timer.start();
+        
     }
     
     // event handle method for window resizing
@@ -116,7 +117,6 @@ public class GUIController {
     }
     @FXML
     private void confirmMap() {
-        
         if(mapManagerTextField.getText() != "") {
             try {
                 if(isSaveMap) {

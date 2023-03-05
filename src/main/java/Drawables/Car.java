@@ -87,9 +87,9 @@ public class Car extends DrawableObject{
         gc.rotate(desiredDirection.getAngleInDegrees());
         gc.translate(-centerPoint.getX(), -centerPoint.getY());
         
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(3);
-        gc.strokeRect(hitBoxRectangle.getX(), hitBoxRectangle.getY(), hitBoxRectangle.getWidth(), hitBoxRectangle.getHeight());
+//        gc.setStroke(Color.BLACK);
+//        gc.setLineWidth(3);
+//        gc.strokeRect(hitBoxRectangle.getX(), hitBoxRectangle.getY(), hitBoxRectangle.getWidth(), hitBoxRectangle.getHeight());
         
         drawVectors(gc);
     }
