@@ -10,10 +10,10 @@ import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
 public class GridCell extends DrawableObject{
     
     private static double size;
-    private boolean isWall;
+    private boolean isWall,isSpawn;
     
     public static void initSize(double gridSize, int gridResolution) {
-        size = gridSize/gridResolution;
+        size = Math.round(gridSize/gridResolution);
     }
     
     public boolean containsPoint(Point2D point2d) {
@@ -34,8 +34,16 @@ public class GridCell extends DrawableObject{
         this.isWall = isWall;
     }
     
+    public void setSpawn(boolean isSpawn) {
+        this.isSpawn = isSpawn;
+    }
+    
     public boolean isWall() {
         return isWall;
+    }
+    
+    public boolean isSpawn() {
+        return isSpawn;
     }
     
     public static double getSize() {
@@ -49,14 +57,24 @@ public class GridCell extends DrawableObject{
 
     @Override
     public void draw(GraphicsContext gc) {
-        if(isWall) {
-            gc.setFill(Constants.WALL_COLOR);
+        if(isSpawn) {
+            gc.setFill(Constants.SPAWN_COLOR1);
+            gc.fillRect(centerPoint.getX()-size/2, centerPoint.getY()-size/2, size/2, size/2);
+            gc.fillRect(centerPoint.getX(), centerPoint.getY(), size/2, size/2);
+            gc.setFill(Constants.SPAWN_COLOR2);
+            gc.fillRect(centerPoint.getX()-size/2, centerPoint.getY(), size/2, size/2);
+            gc.fillRect(centerPoint.getX(), centerPoint.getY()-size/2, size/2, size/2);
         }else {
-            gc.setFill(baseColor);
+           if(isWall) {
+               gc.setFill(Constants.WALL_COLOR);
+           } else {
+               gc.setFill(baseColor);
+           } 
+           gc.fillRect(centerPoint.getX()-size/2, centerPoint.getY()-size/2, size, size);
         }
-        gc.fillRect(centerPoint.getX()-size/2, centerPoint.getY()-size/2, size, size);
-        
-        
+    }
+    
+    public void drawGridCellOutlineLine(GraphicsContext gc) {
         gc.setStroke(Color.BLACK);
         gc.strokeRect(centerPoint.getX()-size/2, centerPoint.getY()-size/2, size, size);
     }

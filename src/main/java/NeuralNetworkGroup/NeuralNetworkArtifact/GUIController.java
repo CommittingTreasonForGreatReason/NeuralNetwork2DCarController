@@ -1,29 +1,33 @@
 package NeuralNetworkGroup.NeuralNetworkArtifact;
 
 import drawables.RaceTrack;
-import fileAnData.MapFileManager;
+import fileAndData.MapFileManager;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
 
 public class GUIController {
-    private static GUIController guiController;
 	public static final double initial_width = Screen.getPrimary().getBounds().getWidth() * 0.9;
     public static final double initial_height = Screen.getPrimary().getBounds().getHeight() * 0.8;
 	
 	@FXML
 	AnchorPane anchorPane;
 	@FXML
-	TextArea mapManagerTextArea;
+	Label mapManagerLabel;
+	@FXML
+	TextField mapManagerTextField;
 	@FXML
     Pane mapManagerPane,mapManagerPaneBackGround;
 	@FXML
 	Button confirmButton,abortButton;
+	
+	private boolean isSaveMap;
 	
 	static ResizeableCanvas resizeableCanvas;
 	static Renderer renderer;
@@ -71,9 +75,11 @@ public class GUIController {
         // reposition geometry elements based on new window/canvas dimensions
         renderer.onResize();
         
-//        mapManagerTextArea.setPrefSize(resizeableCanvas.getWidth()*0.6, resizeableCanvas.getHeight()*0.6);
-        mapManagerTextArea.setLayoutX(resizeableCanvas.getWidth()/2-mapManagerTextArea.getPrefWidth()/2);
-        mapManagerTextArea.setLayoutY(resizeableCanvas.getHeight()/2-mapManagerTextArea.getPrefHeight()/2);
+        mapManagerLabel.setLayoutX(resizeableCanvas.getWidth()/2-mapManagerLabel.getPrefWidth()/2);
+        mapManagerLabel.setLayoutY(resizeableCanvas.getHeight()/4);
+        
+        mapManagerTextField.setLayoutX(resizeableCanvas.getWidth()/2-mapManagerTextField.getPrefWidth()/2);
+        mapManagerTextField.setLayoutY(resizeableCanvas.getHeight()/2);
         
         mapManagerPane.setPrefSize(resizeableCanvas.getWidth(), resizeableCanvas.getHeight());
         mapManagerPane.setLayoutX(0);
@@ -103,13 +109,28 @@ public class GUIController {
     	return resizeableCanvas.getHeight();
     }
     
-    public void triggerSaveMapDialog() {
+    public void triggerMapDialog(boolean isSaveMap) {
         mapManagerPane.setVisible(true);
+        this.isSaveMap = isSaveMap;
+        mapManagerLabel.setText("do you want to " + (isSaveMap?"save":"load")  + " this map?");
     }
     @FXML
-    private void saveMap() {
-        MapFileManager.saveMap(RaceTrack.getRaceTrackInstance(), "map");
-        mapManagerPane.setVisible(false);
+    private void confirmMap() {
+        
+        if(mapManagerTextField.getText() != "") {
+            try {
+                if(isSaveMap) {
+                    MapFileManager.saveMap(RaceTrack.getRaceTrackInstance(), mapManagerTextField.getText());
+                }else {
+                    MapFileManager.loadMap(RaceTrack.getRaceTrackInstance(), mapManagerTextField.getText()); 
+                }
+                mapManagerPane.setVisible(false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else {
+            System.err.println("Error type in a valid map name");
+        }
     }
     @FXML
     private void abortMap() {

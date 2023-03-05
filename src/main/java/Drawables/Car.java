@@ -38,6 +38,11 @@ public class Car extends DrawableObject{
     public boolean isCrashed() {
         return isCrashed;
     }
+    
+    public void setCenterPoint(Vector2 centerPoint) {
+        this.centerPoint = centerPoint;
+        hitBoxRectangle = new Rectangle(centerPoint.getX()-width/2,centerPoint.getY()-width/2,width,width);
+    }
 
     @Override
     public void update(double secondsSinceLastFrame) {
@@ -55,7 +60,7 @@ public class Car extends DrawableObject{
         if(speed < 0) {
             speed = 0;
         }
-        velocity = Vector2.add(velocity, Vector2.getScaledVector(desiredDirection, 1));
+        velocity = Vector2.add(velocity, Vector2.getScaledVector(desiredDirection, 2));
         velocity.setMagnitude(speed);
         if(velocity.getMagnitude() > maxVelocity) {
             velocity.setMagnitude(maxVelocity);
