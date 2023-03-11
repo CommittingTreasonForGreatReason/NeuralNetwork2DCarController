@@ -7,6 +7,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import vectors.Vector2;
 
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
 import NeuralNetworkGroup.NeuralNetworkArtifact.GUIController;
@@ -18,13 +19,13 @@ public class RaceTrack extends DrawableObject{
     private Grid grid;
     private final int amountOfCars = 100;
     private ArrayList<Car> cars;
+    private ArrayList<Line2D> trackLines;
 
     private RaceTrack(Color baseColor, Vector2 centerPoint) {
         super(baseColor, centerPoint);
         System.out.println("initialized RaceTrack:");
         Car.setSizes();
         grid = new Grid(Color.GRAY, new Vector2(GUIController.getCanvasWidth()/2, GUIController.getCanvasHeight()/2));
-        spawnCars();
     }
     
     public static RaceTrack getRaceTrackInstance() {
@@ -48,6 +49,26 @@ public class RaceTrack extends DrawableObject{
             }
             cars.add(new Car(carPosition));
         }
+        
+        initTrackLines();
+    }
+    
+    public void initTrackLines() {
+        trackLines = new ArrayList<Line2D>();
+        GridCell gridCells[][] = grid.getGridCells();
+        for (int i = 0;i<gridCells.length;i++) {
+            for (int j = 0;j<gridCells[i].length;j++) {
+                GridCell gridCell = gridCells[i][j];
+                GridCell[] neighborGridCells = grid.getNeighborGridCells(gridCell);
+                
+                    
+                ArrayList<Line2D> trackLinesThisGridCell = gridCell.getTrackLinesThisGridCell(neighborGridCells);
+                for(Line2D line : trackLinesThisGridCell) {
+                    trackLines.add(line);
+                }
+                
+            }
+        }
     }
     
     public Grid getGrid() {
@@ -67,6 +88,11 @@ public class RaceTrack extends DrawableObject{
     @Override
     public void draw(GraphicsContext gc) {
         grid.draw(gc);
+        gc.setLineWidth(3);
+        gc.setStroke(Color.MAGENTA);
+        for(Line2D line :trackLines) {
+            gc.strokeLine(line.getX1(),line.getY1(), line.getX2(), line.getY2());
+        }
         for(Car car : cars) {
             car.draw(gc);
         }

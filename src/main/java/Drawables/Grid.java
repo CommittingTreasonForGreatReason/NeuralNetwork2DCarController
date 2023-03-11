@@ -32,7 +32,7 @@ public class Grid extends DrawableObject{
         for (int i = 0;i<rows;i++) {
             for (int j = 0;j<columns;j++) {
                 Vector2 gridCellCenterPoint = new Vector2(centerPoint.getX()-width/2+gridCellSize/2+gridCellSize*j, centerPoint.getY()-height/2+gridCellSize/2+gridCellSize*i);
-                gridCells[i][j] = new GridCell(Constants.GROUND_COLOR, gridCellCenterPoint);
+                gridCells[i][j] = new GridCell(Constants.GROUND_COLOR, gridCellCenterPoint,i,j);
             }
         }
         this.rows = rows;
@@ -45,6 +45,14 @@ public class Grid extends DrawableObject{
     public int getColumns(){
         return columns;
     }
+    // returns GridCell with specified row/column
+    // return null if row/column isn't valid row/column in the Grid
+    GridCell tryGetGridCell(int row, int column) {
+        if(row > rows-1 || row < 0 || column > columns-1 || column < 0) {
+            return null;
+        }
+        return gridCells[row][column];
+    }
     
     public GridCell[][] getGridCells() {
         return gridCells;
@@ -56,6 +64,17 @@ public class Grid extends DrawableObject{
     
     public ArrayList<GridCell> getSpawnGridCells() {
         return spawnGridCells;
+    }
+    // format of Neighbors of Array [North,East,South,West]
+    public GridCell[] getNeighborGridCells(GridCell gridCell) {
+        GridCell[] neighborGridCells = new GridCell[4];
+        int row = gridCell.getRow();
+        int column = gridCell.getColumn();
+        neighborGridCells[0] = tryGetGridCell(row-1, column);
+        neighborGridCells[1] = tryGetGridCell(row, column+1);
+        neighborGridCells[2] = tryGetGridCell(row+1, column);
+        neighborGridCells[3] = tryGetGridCell(row, column-1);
+        return neighborGridCells;
     }
     
     public void toggleShowGridLines() {
@@ -118,7 +137,7 @@ public class Grid extends DrawableObject{
         hoverGridCell = null;
         for (int i = 0;i<gridCells.length;i++) {
             for (int j = 0;j<gridCells[i].length;j++) {
-                if(gridCells[i][j].containsPoint(mousePosition)) {
+                if(gridCells[i][j].containsPoint(mousePosition.getX(),mousePosition.getY())) {
                     hoverGridCell = gridCells[i][j];
                 }
             }
