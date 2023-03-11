@@ -10,7 +10,9 @@ import vectors.Vector2;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
+import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
 import NeuralNetworkGroup.NeuralNetworkArtifact.GUIController;
+import NeuralNetworkGroup.NeuralNetworkArtifact.MarchingSquareHelper;
 
 public class RaceTrack extends DrawableObject{
     
@@ -54,21 +56,7 @@ public class RaceTrack extends DrawableObject{
     }
     
     public void initTrackLines() {
-        trackLines = new ArrayList<Line2D>();
-        GridCell gridCells[][] = grid.getGridCells();
-        for (int i = 0;i<gridCells.length;i++) {
-            for (int j = 0;j<gridCells[i].length;j++) {
-                GridCell gridCell = gridCells[i][j];
-                GridCell[] neighborGridCells = grid.getNeighborGridCells(gridCell);
-                
-                    
-                ArrayList<Line2D> trackLinesThisGridCell = gridCell.getTrackLinesThisGridCell(neighborGridCells);
-                for(Line2D line : trackLinesThisGridCell) {
-                    trackLines.add(line);
-                }
-                
-            }
-        }
+        trackLines = MarchingSquareHelper.getMarchingSquareLines(grid);
     }
     
     public Grid getGrid() {
@@ -88,13 +76,17 @@ public class RaceTrack extends DrawableObject{
     @Override
     public void draw(GraphicsContext gc) {
         grid.draw(gc);
-        gc.setLineWidth(3);
-        gc.setStroke(Color.MAGENTA);
-        for(Line2D line :trackLines) {
-            gc.strokeLine(line.getX1(),line.getY1(), line.getX2(), line.getY2());
-        }
+        drawTrackLines(gc);
         for(Car car : cars) {
             car.draw(gc);
+        }
+    }
+    
+    private void drawTrackLines(GraphicsContext gc) {
+        gc.setLineWidth(3);
+        gc.setStroke(Constants.TRACKLINE_COLOR);
+        for(Line2D line :trackLines) {
+            gc.strokeLine(line.getX1(),line.getY1(), line.getX2(), line.getY2());
         }
     }
 
@@ -105,11 +97,13 @@ public class RaceTrack extends DrawableObject{
     
     public void mouseClicked(final MouseEvent e) {
         grid.tryClickBoardCell(e);
+        initTrackLines();
     }
     
     public void mouseDragged(final MouseEvent e) {
         grid.trySetHoverGridCell(new Point2D(e.getX(),e.getY()));
         grid.tryClickBoardCell(e);
+        initTrackLines();
     }
     
     public void mouseMoved(Point2D mousePosition){

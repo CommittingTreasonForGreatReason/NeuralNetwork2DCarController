@@ -90,8 +90,9 @@ public class Car extends DrawableObject{
 //        gc.setStroke(Color.BLACK);
 //        gc.setLineWidth(3);
 //        gc.strokeRect(hitBoxRectangle.getX(), hitBoxRectangle.getY(), hitBoxRectangle.getWidth(), hitBoxRectangle.getHeight());
-        
-        drawVectors(gc);
+        if(!isCrashed) {
+            drawVectors(gc);
+        }
     }
     
     private void drawVectors(GraphicsContext gc) {

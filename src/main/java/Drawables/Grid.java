@@ -47,7 +47,7 @@ public class Grid extends DrawableObject{
     }
     // returns GridCell with specified row/column
     // return null if row/column isn't valid row/column in the Grid
-    GridCell tryGetGridCell(int row, int column) {
+    public GridCell tryGetGridCell(int row, int column) {
         if(row > rows-1 || row < 0 || column > columns-1 || column < 0) {
             return null;
         }
@@ -64,17 +64,6 @@ public class Grid extends DrawableObject{
     
     public ArrayList<GridCell> getSpawnGridCells() {
         return spawnGridCells;
-    }
-    // format of Neighbors of Array [North,East,South,West]
-    public GridCell[] getNeighborGridCells(GridCell gridCell) {
-        GridCell[] neighborGridCells = new GridCell[4];
-        int row = gridCell.getRow();
-        int column = gridCell.getColumn();
-        neighborGridCells[0] = tryGetGridCell(row-1, column);
-        neighborGridCells[1] = tryGetGridCell(row, column+1);
-        neighborGridCells[2] = tryGetGridCell(row+1, column);
-        neighborGridCells[3] = tryGetGridCell(row, column-1);
-        return neighborGridCells;
     }
     
     public void toggleShowGridLines() {

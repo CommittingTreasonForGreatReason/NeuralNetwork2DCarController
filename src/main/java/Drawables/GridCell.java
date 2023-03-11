@@ -17,19 +17,10 @@ public class GridCell extends DrawableObject{
     private int row,column;
     private static double size;
     private boolean isWall,isSpawn;
+    private double[] polygonX,polygonY;
     
     public static void initSize(double gridSize, int gridResolution) {
         size = Math.round(gridSize/gridResolution);
-    }
-    
-    public boolean containsPoint(double x, double y) {
-        Rectangle rectangle = new Rectangle(centerPoint.getX()-size/2, centerPoint.getY()-size/2, size, size);
-        return rectangle.contains(new javafx.geometry.Point2D(x, y));
-    }
-    
-    public boolean intersects(Rectangle rect) {
-        Rectangle rectangle = new Rectangle(centerPoint.getX()-size/2, centerPoint.getY()-size/2, size, size);
-        return rectangle.intersects(rect.getX(),rect.getY(),rect.getWidth(),rect.getHeight());
     }
     
     public GridCell(Color baseColor, Vector2 centerPoint, int row, int column) {
@@ -64,6 +55,139 @@ public class GridCell extends DrawableObject{
     public static double getSize() {
         return size;
     }
+    
+    public boolean containsPoint(double x, double y) {
+        Rectangle rectangle = new Rectangle(centerPoint.getX()-size/2, centerPoint.getY()-size/2, size, size);
+        return rectangle.contains(new javafx.geometry.Point2D(x, y));
+    }
+    
+    public boolean intersects(Rectangle rect) {
+        Rectangle rectangle = new Rectangle(centerPoint.getX()-size/2, centerPoint.getY()-size/2, size, size);
+        return rectangle.intersects(rect.getX(),rect.getY(),rect.getWidth(),rect.getHeight());
+    }
+    
+    public void initPolygon(int key) {
+        ArrayList<Double> polygonXList = new ArrayList<Double>();
+        ArrayList<Double> polygonYList = new ArrayList<Double>();
+//      [a][ ][b]
+//      [ ][g][ ]
+//      [d][ ][c]
+        double size = GridCell.getSize();
+        double centerX = centerPoint.getX();
+        double centerY = centerPoint.getY();
+        Point2D g = new Point2D.Double(centerX, centerY);
+        Point2D a = new Point2D.Double(centerX-size/2, centerY-size/2);
+        Point2D b = new Point2D.Double(centerX+size/2, centerY-size/2);
+        Point2D c = new Point2D.Double(centerX+size/2, centerY+size/2);
+        Point2D d = new Point2D.Double(centerX-size/2, centerY+size/2);
+        switch (key) {
+        case 0:
+            break;
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            polygonXList.add(a.getX());
+            polygonYList.add(a.getY());
+            polygonXList.add(b.getX());
+            polygonYList.add(b.getY());
+            polygonXList.add(c.getX());
+            polygonYList.add(c.getY());
+            break;
+        case 4:
+            break;
+        case 5:
+            break;
+        case 6:
+            polygonXList.add(b.getX());
+            polygonYList.add(b.getY());
+            polygonXList.add(c.getX());
+            polygonYList.add(c.getY());
+            polygonXList.add(d.getX());
+            polygonYList.add(d.getY());
+            break;
+        case 7:
+            polygonXList.add(a.getX());
+            polygonYList.add(a.getY());
+            polygonXList.add(b.getX());
+            polygonYList.add(b.getY());
+            polygonXList.add(c.getX());
+            polygonYList.add(c.getY());
+            polygonXList.add(d.getX());
+            polygonYList.add(d.getY());
+            polygonXList.add(g.getX());
+            polygonYList.add(g.getY());
+            break;
+        case 8:
+            break;
+        case 9:
+            polygonXList.add(a.getX());
+            polygonYList.add(a.getY());
+            polygonXList.add(b.getX());
+            polygonYList.add(b.getY());
+            polygonXList.add(d.getX());
+            polygonYList.add(d.getY());
+            break;
+        case 10:
+            break;
+        case 11:
+            polygonXList.add(a.getX());
+            polygonYList.add(a.getY());
+            polygonXList.add(b.getX());
+            polygonYList.add(b.getY());
+            polygonXList.add(c.getX());
+            polygonYList.add(c.getY());
+            polygonXList.add(g.getX());
+            polygonYList.add(g.getY());
+            polygonXList.add(d.getX());
+            polygonYList.add(d.getY());
+            break;
+        case 12:
+            polygonXList.add(a.getX());
+            polygonYList.add(a.getY());
+            polygonXList.add(c.getX());
+            polygonYList.add(c.getY());
+            polygonXList.add(d.getX());
+            polygonYList.add(d.getY());
+            break;
+        case 13:
+            polygonXList.add(a.getX());
+            polygonYList.add(a.getY());
+            polygonXList.add(b.getX());
+            polygonYList.add(b.getY());
+            polygonXList.add(g.getX());
+            polygonYList.add(g.getY());
+            polygonXList.add(c.getX());
+            polygonYList.add(c.getY());
+            polygonXList.add(d.getX());
+            polygonYList.add(d.getY());
+            break;
+        case 14:
+            polygonXList.add(a.getX());
+            polygonYList.add(a.getY());
+            polygonXList.add(g.getX());
+            polygonYList.add(g.getY());
+            polygonXList.add(b.getX());
+            polygonYList.add(b.getY());
+            polygonXList.add(c.getX());
+            polygonYList.add(c.getY());
+            polygonXList.add(d.getX());
+            polygonYList.add(d.getY());
+            break;
+        case 15:
+            break;
+        default:
+            break;
+        }
+        polygonX = new double[polygonXList.size()];
+        polygonY = new double[polygonYList.size()];
+        
+        for(int i = 0;i<polygonX.length;i++) {
+            polygonX[i] = polygonXList.get(i);
+            polygonY[i] = polygonYList.get(i);
+        }
+    }
 
     @Override
     public void update(double secondsSinceLastFrame) {
@@ -82,11 +206,16 @@ public class GridCell extends DrawableObject{
         }else {
            if(isWall) {
                gc.setFill(Constants.WALL_COLOR);
+               gc.fillRect(centerPoint.getX()-size/2, centerPoint.getY()-size/2, size, size);
            } else {
                gc.setFill(baseColor);
+               gc.fillRect(centerPoint.getX()-size/2, centerPoint.getY()-size/2, size, size);
+               gc.setFill(Constants.WALL_COLOR);
+               gc.fillPolygon(polygonX, polygonY, polygonX.length);
            } 
-           gc.fillRect(centerPoint.getX()-size/2, centerPoint.getY()-size/2, size, size);
+           
         }
+        
     }
     
     public void drawGridCellOutlineLine(GraphicsContext gc) {
@@ -102,92 +231,6 @@ public class GridCell extends DrawableObject{
     @Override
     public void repositionGeometryOnResize() {
         
-    }
-    
-    public ArrayList<Line2D> getTrackLinesThisGridCell(GridCell[] neighborGridCells){
-        ArrayList<Line2D> trackLinesThisGridCell =  new ArrayList<Line2D>();
-        if(isWall) {
-           return  trackLinesThisGridCell;
-        }
-//      [a][k][b]
-//      [n][g][l]
-//      [d][m][c]
-        
-        double centerX = centerPoint.getX();
-        double centerY = centerPoint.getY();
-        Point2D g = new Point2D.Double(centerX, centerY);
-        Point2D a = new Point2D.Double(centerX-size/2, centerY-size/2);
-        Point2D b = new Point2D.Double(centerX+size/2, centerY-size/2);
-        Point2D c = new Point2D.Double(centerX+size/2, centerY+size/2);
-        Point2D d = new Point2D.Double(centerX-size/2, centerY+size/2);
-        Point2D k = new Point2D.Double(centerX, centerY-size/2);
-        Point2D l = new Point2D.Double(centerX+size/2, centerY);
-        Point2D m = new Point2D.Double(centerX, centerY+size/2);
-        Point2D n = new Point2D.Double(centerX-size/2, centerY);
-        
-        int key0 = neighborGridCells[0] == null?1:(neighborGridCells[0].isWall?1:0);
-        int key1 = neighborGridCells[1] == null?1:(neighborGridCells[1].isWall?1:0);
-        int key2 = neighborGridCells[2] == null?1:(neighborGridCells[2].isWall?1:0);
-        int key3 = neighborGridCells[3] == null?1:(neighborGridCells[3].isWall?1:0);
-        int key = key0 + key1*2 + key2*4 + key3*8;
-        
-        switch (key) {
-        case 0:
-            break;
-        case 1:
-            trackLinesThisGridCell.add(new Line2D.Double(a,b));
-            break;
-        case 2:
-            trackLinesThisGridCell.add(new Line2D.Double(b,c));
-            break;
-        case 3:
-            trackLinesThisGridCell.add(new Line2D.Double(a,c));
-            break;
-        case 4:
-            trackLinesThisGridCell.add(new Line2D.Double(d,c));
-            break;
-        case 5:
-            trackLinesThisGridCell.add(new Line2D.Double(a,b));
-            trackLinesThisGridCell.add(new Line2D.Double(d,c));
-            break;
-        case 6:
-            trackLinesThisGridCell.add(new Line2D.Double(b,d));
-            break;
-        case 7:
-            trackLinesThisGridCell.add(new Line2D.Double(a,g));
-            trackLinesThisGridCell.add(new Line2D.Double(d,g));
-            break;
-        case 8:
-            trackLinesThisGridCell.add(new Line2D.Double(a,d));
-            break;
-        case 9:
-            trackLinesThisGridCell.add(new Line2D.Double(b,d));
-            break;
-        case 10:
-            trackLinesThisGridCell.add(new Line2D.Double(a,d));
-            trackLinesThisGridCell.add(new Line2D.Double(b,c));
-            break;
-        case 11:
-            trackLinesThisGridCell.add(new Line2D.Double(d,g));
-            trackLinesThisGridCell.add(new Line2D.Double(c,g));
-            break;
-        case 12:
-            trackLinesThisGridCell.add(new Line2D.Double(a,c));
-            break;
-        case 13:
-            trackLinesThisGridCell.add(new Line2D.Double(b,g));
-            trackLinesThisGridCell.add(new Line2D.Double(c,g));
-            break;
-        case 14:
-            trackLinesThisGridCell.add(new Line2D.Double(a,g));
-            trackLinesThisGridCell.add(new Line2D.Double(b,g));
-            break;
-        case 15:
-            break;
-        default:
-            break;
-        }
-        return trackLinesThisGridCell;
     }
     
     @Override
