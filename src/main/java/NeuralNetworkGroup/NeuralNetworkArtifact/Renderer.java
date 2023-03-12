@@ -4,6 +4,7 @@ import fileAndData.MapFileManager;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
@@ -59,6 +60,10 @@ public final class Renderer {
     public void onResize() {
     	
         
+    }
+    
+    public void mouseScrolled(ScrollEvent e) {
+        raceTrack.mouseScroll(e.getDeltaY()>0);
     }
     
     public void mouseClicked(final MouseEvent e) {

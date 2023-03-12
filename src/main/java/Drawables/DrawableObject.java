@@ -17,6 +17,12 @@ public abstract class DrawableObject {
 		this.centerPoint = centerPoint;
 	}
 	
+	public double getCenterX() {
+        return centerPoint.getX();
+    }
+	public double getCenterY() {
+        return centerPoint.getY();
+    }
 	// updates the objects data continuously.
 	public abstract void update(final double secondsSinceLastFrame);
 

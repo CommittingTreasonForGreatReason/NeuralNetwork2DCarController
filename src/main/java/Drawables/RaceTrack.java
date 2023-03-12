@@ -3,8 +3,10 @@ package drawables;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import vectors.Vector2;
 
 import java.awt.geom.Line2D;
@@ -22,6 +24,10 @@ public class RaceTrack extends DrawableObject{
     private final int amountOfCars = 100;
     private ArrayList<Car> cars;
     private ArrayList<Line2D> trackLines;
+    private ArrayList<Line2D> goalLines;
+    private Line2D editGoalLine = null;
+    
+    private byte scrollIndex = 0, maxScrollIndex=2;
 
     private RaceTrack(Color baseColor, Vector2 centerPoint) {
         super(baseColor, centerPoint);
@@ -51,12 +57,15 @@ public class RaceTrack extends DrawableObject{
             }
             cars.add(new Car(carPosition));
         }
-        
         initTrackLines();
     }
     
     public void initTrackLines() {
         trackLines = MarchingSquareHelper.getMarchingSquareLines(grid);
+    }
+    
+    public void initGoalLines(ArrayList<Line2D> goalLines) {
+        this.goalLines = goalLines;
     }
     
     public Grid getGrid() {
@@ -68,7 +77,7 @@ public class RaceTrack extends DrawableObject{
         for(Car car : cars) {
             car.update(secondsSinceLastFrame);
             if(!car.isCrashed()) {
-                car.updateCrashed(grid.getWallGridCells());
+                car.updateCrashed(trackLines);
             }
         }
     }
@@ -77,6 +86,7 @@ public class RaceTrack extends DrawableObject{
     public void draw(GraphicsContext gc) {
         grid.draw(gc);
         drawTrackLines(gc);
+        drawGoalLines(gc);
         for(Car car : cars) {
             car.draw(gc);
         }
@@ -85,9 +95,32 @@ public class RaceTrack extends DrawableObject{
     private void drawTrackLines(GraphicsContext gc) {
         gc.setLineWidth(3);
         gc.setStroke(Constants.TRACKLINE_COLOR);
-        for(Line2D line :trackLines) {
+        for(Line2D line : trackLines) {
             gc.strokeLine(line.getX1(),line.getY1(), line.getX2(), line.getY2());
         }
+    }
+    
+    private void drawGoalLines(GraphicsContext gc) {
+        gc.setLineWidth(3);
+        gc.setFont(new Font("Arial",24));
+        int lineIndex = 0;
+        for(Line2D line : goalLines) {
+            gc.setStroke(Constants.GOALLINE_COLOR);
+            gc.strokeLine(line.getX1(),line.getY1(), line.getX2(), line.getY2());
+            gc.setStroke(Color.BLACK);
+            gc.strokeText(lineIndex+"", line.getBounds().getCenterX()-gc.getFont().getSize()/3, line.getBounds().getCenterY());
+            lineIndex++;
+        }
+        if(editGoalLine!=null) {
+            drawEditGoalLine(gc);
+        }
+    }
+    
+    private void drawEditGoalLine(GraphicsContext gc) {
+        gc.setStroke(Constants.GOALLINE_COLOR);
+        gc.strokeLine(editGoalLine.getX1(),editGoalLine.getY1(), editGoalLine.getX2(), editGoalLine.getY2());
+        gc.setStroke(Color.BLACK);
+        gc.strokeText(goalLines.size()+"", editGoalLine.getBounds().getCenterX()-gc.getFont().getSize()/3, editGoalLine.getBounds().getCenterY());
     }
 
     @Override
@@ -95,19 +128,85 @@ public class RaceTrack extends DrawableObject{
         
     }
     
+    public void mouseScroll(boolean isScrollUp) {
+        scrollIndex += isScrollUp?1:-1;
+        if(scrollIndex>maxScrollIndex) {
+            scrollIndex = 0;
+        }else if(scrollIndex<0) {
+            scrollIndex = maxScrollIndex;
+        }
+        switch (scrollIndex) {
+        case 0:
+            System.out.println("selected Wall");
+            break;
+        case 1:
+            System.out.println("selected Spawn");
+            break;
+        case 2:
+            System.out.println("selected Goal");
+            break;
+        default:
+            break;
+        }
+    }
+    
+    private void tryEditGoalLine() {
+        GridCell hoverGridCell = grid.getHoverGridCell();
+        if(editGoalLine==null) {
+                editGoalLine = new Line2D.Double(hoverGridCell.getCenterX(),hoverGridCell.getCenterY(),hoverGridCell.getCenterX(),hoverGridCell.getCenterY());
+            }else {
+                goalLines.add(editGoalLine);
+                editGoalLine = null;
+            }
+    }
+    
+    private void tryDeleteGoalLine() {
+        GridCell hoverGridCell = grid.getHoverGridCell();
+        for(Line2D goalLine : goalLines) {
+            double hoverX = hoverGridCell.getCenterX();
+            double hoverY = hoverGridCell.getCenterY();
+            double lineX1 = goalLine.getX1();
+            double lineY1 = goalLine.getY1();
+            double lineX2 = goalLine.getX2();
+            double lineY2 = goalLine.getY2();
+            
+            if((lineX1 == hoverX && lineY1 == hoverY) || (lineX2 == hoverX && lineY2 == hoverY)) {
+                goalLines.remove(goalLine);
+                return;
+            }
+        }
+    }
+    
     public void mouseClicked(final MouseEvent e) {
-        grid.tryClickBoardCell(e);
-        initTrackLines();
+        if(scrollIndex == 2) {
+            if(e.getButton() == MouseButton.PRIMARY) {
+                tryEditGoalLine();
+            }else if(e.getButton() == MouseButton.SECONDARY) {
+                tryDeleteGoalLine();
+                editGoalLine = null;
+            }
+            
+        }else {
+            grid.tryClickBoardCell(e,scrollIndex);
+            initTrackLines();
+        }
     }
     
     public void mouseDragged(final MouseEvent e) {
-        grid.trySetHoverGridCell(new Point2D(e.getX(),e.getY()));
-        grid.tryClickBoardCell(e);
-        initTrackLines();
+        mouseMoved(new Point2D(e.getX(), e.getY()));
+        mouseClicked(e);
     }
     
     public void mouseMoved(Point2D mousePosition){
         grid.trySetHoverGridCell(mousePosition);
+        updateEditGoalLineEndPoint(mousePosition);
+    }
+    
+    private void updateEditGoalLineEndPoint(Point2D mousePosition) {
+        GridCell hoverGridCell = grid.getHoverGridCell();
+        if(editGoalLine!=null) {
+            editGoalLine.setLine(editGoalLine.getX1(),editGoalLine.getY1(),hoverGridCell.getCenterX(),hoverGridCell.getCenterY());
+        } 
     }
     
     public void keyPressed(KeyEvent e) {

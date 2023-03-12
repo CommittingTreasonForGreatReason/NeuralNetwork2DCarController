@@ -1,5 +1,6 @@
 package fileAndData;
 
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -66,6 +67,7 @@ public class MapFileManager {
                 }
             }
             racetrack.spawnCars();
+            racetrack.initGoalLines(new ArrayList<Line2D>());
             System.out.println("loaded Map :)");
             System.out.println("Resolution: " + mapBufferedImage.getWidth() + "/" + mapBufferedImage.getHeight());
         } catch (IOException e) {

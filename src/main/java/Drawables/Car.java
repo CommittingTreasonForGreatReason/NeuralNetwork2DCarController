@@ -1,5 +1,6 @@
 package drawables;
 
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -67,9 +68,9 @@ public class Car extends DrawableObject{
         }
     }
     
-    public void updateCrashed(ArrayList<GridCell> wallGridCells) {
-        for (GridCell wallGridCell : wallGridCells) {
-            if(wallGridCell.intersects(hitBoxRectangle)) {
+    public void updateCrashed(ArrayList<Line2D> trackLines) {
+        for (Line2D line : trackLines) {
+            if(line.intersects(hitBoxRectangle.getX(),hitBoxRectangle.getY(),hitBoxRectangle.getWidth(),hitBoxRectangle.getHeight())) {
                  isCrashed = true;
                  baseColor = Constants.CAR_CRASHED_COLOR;
                  return;

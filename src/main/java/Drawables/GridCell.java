@@ -4,15 +4,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import vectors.Vector2;
-
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
 
 public class GridCell extends DrawableObject{
-    
     
     private int row,column;
     private static double size;

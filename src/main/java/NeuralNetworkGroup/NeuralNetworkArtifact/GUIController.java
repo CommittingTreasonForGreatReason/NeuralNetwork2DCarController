@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
@@ -62,6 +63,7 @@ public class GUIController {
         resizeableCanvas.setOnMouseClicked(this::mouseClicked);
         resizeableCanvas.setOnMouseMoved(this::mouseMoved);
         resizeableCanvas.setOnMouseDragged(this::mouseDragged);
+        resizeableCanvas.setOnScroll(this::mouseScrolled);
         
         resizedCanvas();
         
@@ -137,13 +139,15 @@ public class GUIController {
         mapManagerPane.setVisible(false);
     }
     
+    private void mouseScrolled(ScrollEvent e) {
+        renderer.mouseScrolled(e);
+    }
     private void mouseClicked(final MouseEvent e) {
         renderer.mouseClicked(e);
     }
     private void mouseDragged(final MouseEvent e) {
         renderer.mouseDragged(e);
     }
-
     private void mouseMoved(final MouseEvent e) {
         renderer.mouseMoved(new Point2D(e.getX(),e.getY()));
     }

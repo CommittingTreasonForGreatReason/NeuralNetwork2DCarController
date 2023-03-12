@@ -66,6 +66,10 @@ public class Grid extends DrawableObject{
         return spawnGridCells;
     }
     
+    public GridCell getHoverGridCell() {
+        return hoverGridCell;
+    }
+    
     public void toggleShowGridLines() {
         showGridLines = !showGridLines;
     }
@@ -96,15 +100,31 @@ public class Grid extends DrawableObject{
         
     }
     
-    public void tryClickBoardCell(final MouseEvent e) {
+    public void tryClickBoardCell(final MouseEvent e, final byte scrollIndex) {
         if(hoverGridCell==null) {
             return;
         }
         if(e.getButton() == MouseButton.PRIMARY) {
-            if(!wallGridCells.contains(hoverGridCell)) {
-                wallGridCells.add(hoverGridCell);
-                hoverGridCell.setWall(true);
+            switch (scrollIndex) {
+            case 0:
+                if(!wallGridCells.contains(hoverGridCell)) {
+                    wallGridCells.add(hoverGridCell);
+                    hoverGridCell.setWall(true);
+                }
+                break;
+            case 1:
+                if(!spawnGridCells.contains(hoverGridCell)) {
+                    spawnGridCells.add(hoverGridCell);
+                    hoverGridCell.setSpawn(true);
+                }
+                break;
+            case 2:
+                // !!! leave empty !!!
+                break;
+            default:
+                break;
             }
+            
         }else if(e.getButton() == MouseButton.SECONDARY){
             if(wallGridCells.contains(hoverGridCell)) {
                 wallGridCells.remove(hoverGridCell);
@@ -115,10 +135,7 @@ public class Grid extends DrawableObject{
                 hoverGridCell.setSpawn(false);
             }
         }else if(e.getButton() == MouseButton.MIDDLE) {
-            if(!spawnGridCells.contains(hoverGridCell)) {
-                spawnGridCells.add(hoverGridCell);
-                hoverGridCell.setSpawn(true);
-            }
+            
         }
     }
     
