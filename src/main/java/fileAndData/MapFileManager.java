@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import NeuralNetworkGroup.NeuralNetworkArtifact.GUIController;
+import drawables.GoalLine;
 import drawables.Grid;
 import drawables.GridCell;
 import drawables.RaceTrack;
@@ -67,7 +68,7 @@ public class MapFileManager {
                 }
             }
             racetrack.spawnCars();
-            racetrack.initGoalLines(new ArrayList<Line2D>());
+            racetrack.initGoalLines(new ArrayList<GoalLine>());
             System.out.println("loaded Map :)");
             System.out.println("Resolution: " + mapBufferedImage.getWidth() + "/" + mapBufferedImage.getHeight());
         } catch (IOException e) {
