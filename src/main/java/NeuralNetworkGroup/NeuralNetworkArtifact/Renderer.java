@@ -1,4 +1,7 @@
 package NeuralNetworkGroup.NeuralNetworkArtifact;
+import java.util.ArrayList;
+
+import drawables.GoalLine;
 import drawables.RaceTrack;
 import fileAndData.MapFileManager;
 import javafx.geometry.Point2D;
@@ -24,7 +27,9 @@ public final class Renderer {
     	gc = resizeableCanvas.getGraphicsContext2D();
     	raceTrack = RaceTrack.getRaceTrackInstance();
     	System.out.println("initialized Renderer:");
-    	MapFileManager.loadMap(RaceTrack.getRaceTrackInstance(), "map");
+//    	MapFileManager.loadMap(RaceTrack.getRaceTrackInstance(), "map");
+    	raceTrack.spawnCars();
+    	raceTrack.initGoalLines(new ArrayList<GoalLine>());
     }
 
     // binds the anchor pane width/height to the canvas width/height
