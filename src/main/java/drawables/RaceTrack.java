@@ -66,10 +66,15 @@ public class RaceTrack extends DrawableObject{
     
     public void initGoalLines(ArrayList<GoalLine> goalLines) {
         this.goalLines = goalLines;
+        System.out.println( this.goalLines);
     }
     
     public Grid getGrid() {
         return grid;
+    }
+    
+    public ArrayList<GoalLine> getGoalLines() {
+        return goalLines;
     }
     
     @Override
