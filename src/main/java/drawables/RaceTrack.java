@@ -2,6 +2,7 @@ package drawables;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -12,6 +13,7 @@ import vectors.Vector2;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
+import NeuralNetworkGroup.NeuralNetworkArtifact.Camera;
 import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
 import NeuralNetworkGroup.NeuralNetworkArtifact.GUIController;
 import NeuralNetworkGroup.NeuralNetworkArtifact.MarchingSquareHelper;
@@ -23,6 +25,8 @@ public class RaceTrack extends DrawableObject{
 
     private Grid grid;
     private Minimap minimap;
+    private Camera camera;
+    
     private ArrayList<Car> cars;
     private ArrayList<Line2D> trackLines;
     private ArrayList<GoalLine> goalLines;
@@ -41,6 +45,7 @@ public class RaceTrack extends DrawableObject{
         double height = GUIController.getCanvasHeight();
         grid = new Grid(Color.GRAY, new Vector2(width/2, height/2));
         minimap = new Minimap(Color.MAGENTA, new Vector2(getCenterX()+width/2-width*Minimap.scaleFactor/2 -20, getCenterY()-height/2+height*Minimap.scaleFactor/2 + 20), this);
+        camera = new Camera(getCenterX(), getCenterY());
     }
     
     public static RaceTrack getRaceTrackInstance() {
@@ -89,7 +94,7 @@ public class RaceTrack extends DrawableObject{
     
     @Override
     public void update(double secondsSinceLastFrame) {
-        
+        camera.move();
         for(Car car : cars) {
             car.update(secondsSinceLastFrame);
             if(!car.isCrashed()) {
@@ -102,11 +107,15 @@ public class RaceTrack extends DrawableObject{
 
     @Override
     public void draw(GraphicsContext gc) {
+        gc.translate(-camera.getX(), -camera.getY());
         grid.draw(gc);
         drawTrackLines(gc);
         drawGoalLines(gc);
         drawCars(gc);
-        minimap.draw(gc);
+        gc.translate(camera.getX(), camera.getY());
+        if(minimap.isShown()) {
+            minimap.draw(gc);
+        }
     }
     
     private void drawCars(GraphicsContext gc) {
@@ -222,6 +231,7 @@ public class RaceTrack extends DrawableObject{
     }
     
     public void mouseMoved(Point2D mousePosition){
+        mousePosition = new Point2D(mousePosition.getX()+camera.getX(), mousePosition.getY()+camera.getY());
         grid.trySetHoverGridCell(mousePosition);
         updateEditGoalLineEndPoint(mousePosition);
     }
@@ -241,12 +251,17 @@ public class RaceTrack extends DrawableObject{
         if(e.getText().equals("x")) {
             grid.toggleShowGridLines();
         }
+        if(e.getText().equals("m")) {
+            minimap.toggleIsShown();
+        }
+        camera.keyPressed(e);
     }
     
     public void keyReleased(KeyEvent e) {
         for(Car car : cars) {
             car.keyReleased(e);
         }
+        camera.keyReleased(e);
     }
 
 }

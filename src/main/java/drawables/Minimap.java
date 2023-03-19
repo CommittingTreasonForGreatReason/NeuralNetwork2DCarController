@@ -29,6 +29,10 @@ public class Minimap extends DrawableObject {
     public boolean isShown() {
         return isShown;
     }
+    
+    public void toggleIsShown() {
+        isShown = !isShown;
+    }
 
     @Override
     public void update(double secondsSinceLastFrame) {

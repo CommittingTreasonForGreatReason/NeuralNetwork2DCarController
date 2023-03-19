@@ -12,12 +12,12 @@ import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
 public class GridCell extends DrawableObject{
     
     private int row,column;
-    private static double size;
+    private static int size;
     private boolean isWall,isSpawn;
     private double[] polygonX,polygonY;
     
     public static void initSize(double gridSize, int gridResolution) {
-        size = Math.round(gridSize/gridResolution);
+        size = (int) Math.round(gridSize/gridResolution);
     }
     
     public GridCell(Color baseColor, Vector2 centerPoint, int row, int column) {
@@ -212,7 +212,6 @@ public class GridCell extends DrawableObject{
            } 
            
         }
-        
     }
     
     public void drawGridCellOutlineLine(GraphicsContext gc) {
