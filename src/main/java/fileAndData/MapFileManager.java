@@ -68,8 +68,8 @@ public class MapFileManager {
             File mapImageFile = new File(directory+fileName+".png");
             
             BufferedImage mapBufferedImage = ImageIO.read(mapImageFile);
-            
-            racetrack.getGrid().initGrid(mapBufferedImage.getHeight(), mapBufferedImage.getWidth(), GUIController.getCanvasWidth(), GUIController.getCanvasHeight());
+            double gridCellSize = GUIController.getCanvasWidth()/80;
+            racetrack.getGrid().initGrid(mapBufferedImage.getHeight(), mapBufferedImage.getWidth(), gridCellSize*mapBufferedImage.getWidth(), gridCellSize*mapBufferedImage.getHeight());
             
             GridCell[][] gridCells = racetrack.getGrid().getGridCells();
             ArrayList<GridCell> wallGridCells = racetrack.getGrid().getWallGridCells();
@@ -92,7 +92,9 @@ public class MapFileManager {
                 }
             }
             racetrack.spawnCars();
+            racetrack.initTrackLines();
             racetrack.initGoalLines(getGoalLines(fileName));
+            racetrack.initMinimap();
             System.out.println("loaded Map :)");
             System.out.println("Resolution: " + mapBufferedImage.getWidth() + "/" + mapBufferedImage.getHeight());
         } catch (IOException e) {

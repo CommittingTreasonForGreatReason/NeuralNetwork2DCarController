@@ -2,6 +2,9 @@ package NeuralNetworkGroup.NeuralNetworkArtifact;
 
 import drawables.RaceTrack;
 import fileAndData.MapFileManager;
+import graphics.GameLoopTimer;
+import graphics.Renderer;
+import graphics.ResizeableCanvas;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
@@ -49,7 +52,6 @@ public class GUIController {
                 renderer.render();
             }
         };
-        
         
         // add listeners to capture and handle window resize events
         resizeableCanvas.widthProperty().addListener(e -> resizedCanvas());

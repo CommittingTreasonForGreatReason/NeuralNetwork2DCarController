@@ -1,4 +1,4 @@
-package NeuralNetworkGroup.NeuralNetworkArtifact;
+package graphics;
 
 import javafx.animation.AnimationTimer;
 

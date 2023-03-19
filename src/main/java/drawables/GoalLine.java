@@ -54,6 +54,9 @@ public class GoalLine {
     }
     
     public void initLine(double gridCellSize) {
-        line = new Line2D.Double(gridCellSize/2+column1*gridCellSize, gridCellSize/2+row1*gridCellSize, gridCellSize/2+column2*gridCellSize, gridCellSize/2+row2*gridCellSize);
+        GridCell[][] gridCells = RaceTrack.getRaceTrackInstance().getGrid().getGridCells();
+        
+        line = new Line2D.Double(gridCells[row1][column1].getCenterX(), gridCells[row1][column1].getCenterY(),
+                gridCells[row2][column2].getCenterX(), gridCells[row2][column2].getCenterY());
     }
 }

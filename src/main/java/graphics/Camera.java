@@ -1,5 +1,6 @@
-package NeuralNetworkGroup.NeuralNetworkArtifact;
+package graphics;
 
+import NeuralNetworkGroup.NeuralNetworkArtifact.GUIController;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import vectors.Vector2;
@@ -25,6 +26,10 @@ public class Camera {
     }
     public double getCenterY() {
         return position.getY();
+    }
+    
+    public void follow(int x, int y) {
+        position = new Vector2(x, y);
     }
     
     public void move() {

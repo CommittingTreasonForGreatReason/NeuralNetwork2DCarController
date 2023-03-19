@@ -22,7 +22,7 @@ public class Grid extends DrawableObject{
 
     public Grid(Color baseColor, Vector2 centerPoint) {
         super(baseColor, centerPoint);
-        initGrid(40,80,GUIController.getCanvasWidth(),GUIController.getCanvasHeight());
+        initGrid((int)(40*1.5),(int)(80*1.5),GUIController.getCanvasWidth()*1.5,GUIController.getCanvasHeight()*1.5);
     }
     
     public void initGrid(int rows, int columns, double width, double height) {
@@ -100,7 +100,7 @@ public class Grid extends DrawableObject{
         
     }
     
-    public void tryClickBoardCell(final MouseEvent e, final byte scrollIndex) {
+    public void tryClickBoardCell(final MouseEvent e, final byte scrollIndex, final boolean shiftDown) {
         if(hoverGridCell==null) {
             return;
         }
@@ -110,6 +110,27 @@ public class Grid extends DrawableObject{
                 if(!wallGridCells.contains(hoverGridCell)) {
                     wallGridCells.add(hoverGridCell);
                     hoverGridCell.setWall(true);
+                    
+                }
+                if(shiftDown) {
+                        int row = hoverGridCell.getRow();
+                        int column = hoverGridCell.getColumn();
+                        if(row+1 <= rows) {
+                            wallGridCells.add(gridCells[row+1][column]);
+                            gridCells[row+1][column].setWall(true);
+                        }
+                        if(row-1 >= 0) {
+                            wallGridCells.add(gridCells[row-1][column]);
+                            gridCells[row-1][column].setWall(true);
+                        }
+                        if(column+1 <= columns) {
+                            wallGridCells.add(gridCells[row][column+1]);
+                            gridCells[row][column+1].setWall(true);
+                        }
+                        if(column-1 >= 0) {
+                            wallGridCells.add(gridCells[row][column-1]);
+                            gridCells[row][column-1].setWall(true);
+                        }
                 }
                 break;
             case 1:
@@ -129,6 +150,27 @@ public class Grid extends DrawableObject{
             if(wallGridCells.contains(hoverGridCell)) {
                 wallGridCells.remove(hoverGridCell);
                 hoverGridCell.setWall(false);
+                
+            }
+            if(shiftDown) {
+                    int row = hoverGridCell.getRow();
+                    int column = hoverGridCell.getColumn();
+                    if(row+1 <= rows) {
+                        wallGridCells.remove(gridCells[row+1][column]);
+                        gridCells[row+1][column].setWall(false);
+                    }
+                    if(row-1 >= 0) {
+                        wallGridCells.remove(gridCells[row-1][column]);
+                        gridCells[row-1][column].setWall(false);
+                    }
+                    if(column+1 <= columns) {
+                        wallGridCells.remove(gridCells[row][column+1]);
+                        gridCells[row][column+1].setWall(false);
+                    }
+                    if(column-1 >= 0) {
+                        wallGridCells.remove(gridCells[row][column-1]);
+                        gridCells[row][column-1].setWall(false);
+                    }
             }
             if(spawnGridCells.contains(hoverGridCell)) {
                 spawnGridCells.remove(hoverGridCell);

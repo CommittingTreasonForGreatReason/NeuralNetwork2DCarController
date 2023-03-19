@@ -13,10 +13,10 @@ import vectors.Vector2;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
-import NeuralNetworkGroup.NeuralNetworkArtifact.Camera;
 import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
 import NeuralNetworkGroup.NeuralNetworkArtifact.GUIController;
 import NeuralNetworkGroup.NeuralNetworkArtifact.MarchingSquareHelper;
+import graphics.Camera;
 
 public class RaceTrack extends DrawableObject{
     
@@ -25,14 +25,15 @@ public class RaceTrack extends DrawableObject{
 
     private Grid grid;
     private Minimap minimap;
-    private Camera camera;
+    public static Camera camera;
     
-    private ArrayList<Car> cars;
+    private ArrayList<Car> cars = new ArrayList<Car>();
     private ArrayList<Line2D> trackLines;
-    private ArrayList<GoalLine> goalLines;
+    private ArrayList<GoalLine> goalLines = new ArrayList<GoalLine>();
     private GoalLine editGoalLine = null;
     
     private byte scrollIndex = 0, maxScrollIndex=2;
+    private boolean shiftDown = false;
     
     
     private final int amountOfCars = 1;
@@ -44,8 +45,9 @@ public class RaceTrack extends DrawableObject{
         double width = GUIController.getCanvasWidth();
         double height = GUIController.getCanvasHeight();
         grid = new Grid(Color.GRAY, new Vector2(width/2, height/2));
-        minimap = new Minimap(Color.MAGENTA, new Vector2(getCenterX()+width/2-width*Minimap.scaleFactor/2 -20, getCenterY()-height/2+height*Minimap.scaleFactor/2 + 20), this);
         camera = new Camera(getCenterX(), getCenterY());
+        initTrackLines();
+        initMinimap();
     }
     
     public static RaceTrack getRaceTrackInstance() {
@@ -65,6 +67,12 @@ public class RaceTrack extends DrawableObject{
         return goalLines;
     }
     
+    public void initMinimap() {
+        double width = GUIController.getCanvasWidth();
+        double height = GUIController.getCanvasHeight();
+        minimap = new Minimap(Color.MAGENTA, new Vector2(getCenterX()+width/2-width*Minimap.scaleFactor/2 -20, getCenterY()-height/2+height*Minimap.scaleFactor/2 + 20), this);
+    }
+    
     public void spawnCars() {
         ArrayList<GridCell> spawnGridCells = grid.getSpawnGridCells();
         cars = new ArrayList<Car>();
@@ -79,7 +87,6 @@ public class RaceTrack extends DrawableObject{
             }
             cars.add(new Car(carPosition));
         }
-        initTrackLines();
     }
     
     public void initTrackLines() {
@@ -95,11 +102,14 @@ public class RaceTrack extends DrawableObject{
     @Override
     public void update(double secondsSinceLastFrame) {
         camera.move();
+        camera.follow((int)cars.get(0).getCenterX(), (int)cars.get(0).getCenterY());
         for(Car car : cars) {
             car.update(secondsSinceLastFrame);
             if(!car.isCrashed()) {
                 car.updateCrashed(trackLines);
-                car.updateGoalLineScore(goalLines);
+                if(goalLines.size()>0) {
+                    car.updateGoalLineScore(goalLines);
+                }
             }
         }
         minimap.update(secondsSinceLastFrame);
@@ -218,9 +228,8 @@ public class RaceTrack extends DrawableObject{
                 tryDeleteGoalLine();
                 editGoalLine = null;
             }
-            
         }else {
-            grid.tryClickBoardCell(e,scrollIndex);
+            grid.tryClickBoardCell(e,scrollIndex, shiftDown);
             initTrackLines();
         }
     }
@@ -233,12 +242,12 @@ public class RaceTrack extends DrawableObject{
     public void mouseMoved(Point2D mousePosition){
         mousePosition = new Point2D(mousePosition.getX()+camera.getX(), mousePosition.getY()+camera.getY());
         grid.trySetHoverGridCell(mousePosition);
-        updateEditGoalLineEndPoint(mousePosition);
+        updateEditGoalLineEndPoint();
     }
     
-    private void updateEditGoalLineEndPoint(Point2D mousePosition) {
+    private void updateEditGoalLineEndPoint() {
         GridCell hoverGridCell = grid.getHoverGridCell();
-        if(editGoalLine!=null) {
+        if(editGoalLine!=null && hoverGridCell!=null) {
 //            editGoalLine.setLine(editGoalLine.getX1(),editGoalLine.getY1(),hoverGridCell.getCenterX(),hoverGridCell.getCenterY());
             editGoalLine.setRowsAndColumns(editGoalLine.getRow1(), editGoalLine.getColumn1(), hoverGridCell.getRow(), hoverGridCell.getColumn());
         } 
@@ -254,12 +263,18 @@ public class RaceTrack extends DrawableObject{
         if(e.getText().equals("m")) {
             minimap.toggleIsShown();
         }
+        if(e.getCode() == KeyCode.SHIFT) {
+            shiftDown = true;
+        }
         camera.keyPressed(e);
     }
     
     public void keyReleased(KeyEvent e) {
         for(Car car : cars) {
             car.keyReleased(e);
+        }
+        if(e.getCode() == KeyCode.SHIFT) {
+            shiftDown = false;
         }
         camera.keyReleased(e);
     }

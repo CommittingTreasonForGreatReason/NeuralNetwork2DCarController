@@ -1,7 +1,5 @@
-package NeuralNetworkGroup.NeuralNetworkArtifact;
-import java.util.ArrayList;
+package graphics;
 
-import drawables.GoalLine;
 import drawables.RaceTrack;
 import fileAndData.MapFileManager;
 import javafx.geometry.Point2D;
@@ -21,13 +19,13 @@ public final class Renderer {
     private RaceTrack raceTrack;
 
     // constructor
-    Renderer(ResizeableCanvas resizeableCanvas) {
+    public Renderer(ResizeableCanvas resizeableCanvas) {
         // Set Debugging options for overlay
     	this.resizeableCanvas = resizeableCanvas;
     	gc = resizeableCanvas.getGraphicsContext2D();
     	raceTrack = RaceTrack.getRaceTrackInstance();
     	System.out.println("initialized Renderer:");
-    	MapFileManager.loadMap(RaceTrack.getRaceTrackInstance(), "map");
+    	MapFileManager.loadMap(RaceTrack.getRaceTrackInstance(), "bigmap");
     }
 
     // binds the anchor pane width/height to the canvas width/height

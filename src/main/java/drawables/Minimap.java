@@ -3,6 +3,7 @@ package drawables;
 import java.util.ArrayList;
 
 import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
+import NeuralNetworkGroup.NeuralNetworkArtifact.GUIController;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import vectors.Vector2;
@@ -19,11 +20,9 @@ public class Minimap extends DrawableObject {
     public Minimap(Color baseColor, Vector2 centerPoint, RaceTrack racetrack) {
         super(baseColor, centerPoint);
         this.racetrack = racetrack;
-        int rows = racetrack.getGrid().getRows();
-        int columns = racetrack.getGrid().getColumns();
-        this.cellSize = GridCell.getSize()*scaleFactor;
-        this.width = cellSize*columns;
-        this.height = cellSize*rows;
+        this.width = GUIController.getCanvasWidth()*scaleFactor;
+        this.height = GUIController.getCanvasHeight()*scaleFactor;
+        this.cellSize = width/racetrack.getGrid().getColumns();
     }
     
     public boolean isShown() {
@@ -39,8 +38,8 @@ public class Minimap extends DrawableObject {
         ArrayList<Car> cars = racetrack.getCars();
         carIndicators.clear();
         for(Car car : cars) {
-            double x = car.getCenterX()*scaleFactor + getCenterX() - width/2;
-            double y = car.getCenterY()*scaleFactor + getCenterY() - height/2;
+            double x = (car.getCenterX()-RaceTrack.getRaceTrackInstance().getCenterX())/GridCell.getSize()*cellSize + getCenterX();
+            double y = (car.getCenterY()-RaceTrack.getRaceTrackInstance().getCenterY())/GridCell.getSize()*cellSize + getCenterY();
             carIndicators.add(new Vector2(x, y));
         }
     }
@@ -52,9 +51,6 @@ public class Minimap extends DrawableObject {
         GridCell[][] gridCells = racetrack.getGrid().getGridCells();
         int rows = racetrack.getGrid().getRows();
         int columns = racetrack.getGrid().getColumns();
-        double cellSize = GridCell.getSize()*scaleFactor;
-        double width = cellSize*columns;
-        double height = cellSize*rows;
         gc.setFill(baseColor);
         gc.fillRect(getCenterX()-width/2, getCenterY()-height/2, width, height);
         for (int i = 0;i<rows;i++) {
@@ -75,7 +71,7 @@ public class Minimap extends DrawableObject {
         for(Vector2 carIndicators : carIndicators) {
             gc.fillOval(carIndicators.getX(), carIndicators.getY(), 5, 5);
         }
-        gc.setLineWidth(5);
+        gc.setLineWidth(1);
         gc.setStroke(Color.RED);
         gc.strokeRect(getCenterX()-width/2, getCenterY()-height/2, width, height);
     }
