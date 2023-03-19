@@ -32,6 +32,10 @@ public class GoalLine {
         return column2;
     }
     
+    public Line2D getLine() {
+        return line;
+    }
+    
     public void setRowsAndColumns(int row1,int column1,int row2,int column2) {
         this.row1 = row1;
         this.row2 = row2;

@@ -3,12 +3,11 @@ package drawables;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
-import javax.crypto.spec.GCMParameterSpec;
-
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import vectors.Vector2;
 import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
 import NeuralNetworkGroup.NeuralNetworkArtifact.GUIController;
@@ -18,13 +17,15 @@ public class Car extends DrawableObject{
     private Vector2 velocity,desiredDirection;
     private Rectangle hitBoxRectangle;
     private double acceleration;
-    private static final double deceleration = -20;
     private double rotationSpeed;
+    
     private static double width,height;
     private static final double maxVelocity = 300;
+    private static final double deceleration = -20;
     
     private boolean isCrashed = false;
-
+    private double fitness = 0;
+    
     public Car(Vector2 centerPoint) {
         super(Constants.CAR_COLOR, centerPoint);
         velocity = new Vector2(1, 1);
@@ -80,6 +81,12 @@ public class Car extends DrawableObject{
         }
     }
     
+    public void updateGoalLineScore(ArrayList<GoalLine> goalLines) {
+        if(goalLines.get(((int)fitness) % goalLines.size()).getLine().intersects(hitBoxRectangle.getX(),hitBoxRectangle.getY(),hitBoxRectangle.getWidth(),hitBoxRectangle.getHeight())) {
+            fitness++;
+        }
+    }
+    
 
     @Override
     public void draw(GraphicsContext gc) {
@@ -88,8 +95,14 @@ public class Car extends DrawableObject{
             gc.rotate(-desiredDirection.getAngleInDegrees());
             gc.fillRect(-width/2, -height/2, width, height);
             gc.rotate(desiredDirection.getAngleInDegrees());
+            
+            gc.setFont(new Font(20));
+            gc.setFill(Color.RED);
+            gc.fillText(fitness+"", 0, 0);
+            
             gc.translate(-centerPoint.getX(), -centerPoint.getY());
 //            drawHitBox(gc);
+            
             drawVectors(gc);
         
     }

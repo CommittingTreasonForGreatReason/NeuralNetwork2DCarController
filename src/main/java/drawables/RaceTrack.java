@@ -21,7 +21,7 @@ public class RaceTrack extends DrawableObject{
     private static RaceTrack raceTrack;
     
     private Grid grid;
-    private final int amountOfCars = 100;
+    private final int amountOfCars = 1;
     private ArrayList<Car> cars;
     private ArrayList<Line2D> trackLines;
     private ArrayList<GoalLine> goalLines;
@@ -66,7 +66,6 @@ public class RaceTrack extends DrawableObject{
     
     public void initGoalLines(ArrayList<GoalLine> goalLines) {
         this.goalLines = goalLines;
-        System.out.println( this.goalLines);
     }
     
     public Grid getGrid() {
@@ -83,6 +82,7 @@ public class RaceTrack extends DrawableObject{
             car.update(secondsSinceLastFrame);
             if(!car.isCrashed()) {
                 car.updateCrashed(trackLines);
+                car.updateGoalLineScore(goalLines);
             }
         }
     }
