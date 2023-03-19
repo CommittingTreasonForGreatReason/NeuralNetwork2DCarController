@@ -19,28 +19,45 @@ import NeuralNetworkGroup.NeuralNetworkArtifact.MarchingSquareHelper;
 public class RaceTrack extends DrawableObject{
     
     private static RaceTrack raceTrack;
-    
+
+
     private Grid grid;
-    private final int amountOfCars = 1;
+    private Minimap minimap;
     private ArrayList<Car> cars;
     private ArrayList<Line2D> trackLines;
     private ArrayList<GoalLine> goalLines;
     private GoalLine editGoalLine = null;
     
     private byte scrollIndex = 0, maxScrollIndex=2;
+    
+    
+    private final int amountOfCars = 1;
 
-    private RaceTrack(Color baseColor, Vector2 centerPoint) {
-        super(baseColor, centerPoint);
+    private RaceTrack(Color baseColor) {
+        super(baseColor, new Vector2(GUIController.getCanvasWidth()/2, GUIController.getCanvasHeight()/2));
         System.out.println("initialized RaceTrack:");
         Car.setSizes();
-        grid = new Grid(Color.GRAY, new Vector2(GUIController.getCanvasWidth()/2, GUIController.getCanvasHeight()/2));
+        double width = GUIController.getCanvasWidth();
+        double height = GUIController.getCanvasHeight();
+        grid = new Grid(Color.GRAY, new Vector2(width/2, height/2));
+        minimap = new Minimap(Color.MAGENTA, new Vector2(getCenterX()+width/2-width*Minimap.scaleFactor/2 -20, getCenterY()-height/2+height*Minimap.scaleFactor/2 + 20), this);
     }
     
     public static RaceTrack getRaceTrackInstance() {
         if (raceTrack == null) {
-            raceTrack = new RaceTrack(Color.GRAY, new Vector2(GUIController.getCanvasWidth()/2, GUIController.getCanvasHeight()/2));
+            raceTrack = new RaceTrack(Color.GRAY);
         }
         return raceTrack;
+    }
+    
+    public Grid getGrid() {
+        return grid;
+    }
+    public ArrayList<Car> getCars() {
+        return cars;
+    }
+    public ArrayList<GoalLine> getGoalLines() {
+        return goalLines;
     }
     
     public void spawnCars() {
@@ -68,16 +85,11 @@ public class RaceTrack extends DrawableObject{
         this.goalLines = goalLines;
     }
     
-    public Grid getGrid() {
-        return grid;
-    }
     
-    public ArrayList<GoalLine> getGoalLines() {
-        return goalLines;
-    }
     
     @Override
     public void update(double secondsSinceLastFrame) {
+        
         for(Car car : cars) {
             car.update(secondsSinceLastFrame);
             if(!car.isCrashed()) {
@@ -85,6 +97,7 @@ public class RaceTrack extends DrawableObject{
                 car.updateGoalLineScore(goalLines);
             }
         }
+        minimap.update(secondsSinceLastFrame);
     }
 
     @Override
@@ -93,6 +106,7 @@ public class RaceTrack extends DrawableObject{
         drawTrackLines(gc);
         drawGoalLines(gc);
         drawCars(gc);
+        minimap.draw(gc);
     }
     
     private void drawCars(GraphicsContext gc) {
