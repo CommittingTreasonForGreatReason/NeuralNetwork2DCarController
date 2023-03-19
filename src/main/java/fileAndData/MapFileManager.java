@@ -114,7 +114,6 @@ public class MapFileManager {
                 int row2 = scanner.nextInt();
                 int column2 = scanner.nextInt();
                 goalLines.add(new GoalLine(row1, column1, row2, column2));
-                System.out.println(row1+ " " + column1 + " / " + row2 + " " + column2);
             }
             scanner.close();
         } catch (IOException e) {

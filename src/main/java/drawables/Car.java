@@ -3,6 +3,8 @@ package drawables;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
+import javax.crypto.spec.GCMParameterSpec;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -81,22 +83,36 @@ public class Car extends DrawableObject{
 
     @Override
     public void draw(GraphicsContext gc) {
-        gc.setFill(baseColor);
+            gc.setFill(baseColor);
+            gc.translate(centerPoint.getX(), centerPoint.getY());
+            gc.rotate(-desiredDirection.getAngleInDegrees());
+            gc.fillRect(-width/2, -height/2, width, height);
+            gc.rotate(desiredDirection.getAngleInDegrees());
+            gc.translate(-centerPoint.getX(), -centerPoint.getY());
+//            drawHitBox(gc);
+            drawVectors(gc);
+        
+    }
+    
+    public void drawCrashedCross(GraphicsContext gc) {
+        gc.setLineWidth(2);
+        gc.setStroke(baseColor);
         gc.translate(centerPoint.getX(), centerPoint.getY());
         gc.rotate(-desiredDirection.getAngleInDegrees());
-        gc.fillRect(-width/2, -height/2, width, height);
+        gc.strokeLine(-width/2, -width/2, width/2, width/2);
+        gc.strokeLine(width/2, -width/2, -width/2, width/2);
         gc.rotate(desiredDirection.getAngleInDegrees());
         gc.translate(-centerPoint.getX(), -centerPoint.getY());
-        
-//        gc.setStroke(Color.BLACK);
-//        gc.setLineWidth(3);
-//        gc.strokeRect(hitBoxRectangle.getX(), hitBoxRectangle.getY(), hitBoxRectangle.getWidth(), hitBoxRectangle.getHeight());
-        if(!isCrashed) {
-            drawVectors(gc);
-        }
+    }
+    
+    private void drawHitBox(GraphicsContext gc) {
+          gc.setStroke(Color.BLACK);
+          gc.setLineWidth(3);
+          gc.strokeRect(hitBoxRectangle.getX(), hitBoxRectangle.getY(), hitBoxRectangle.getWidth(), hitBoxRectangle.getHeight());
     }
     
     private void drawVectors(GraphicsContext gc) {
+        gc.setLineWidth(3);
         gc.setStroke(Constants.VECTOR_COLOR);
         gc.strokeLine(centerPoint.getX(), centerPoint.getY(), centerPoint.getX() + desiredDirection.getX(), centerPoint.getY() + desiredDirection.getY());
         gc.setStroke(Color.GREEN);

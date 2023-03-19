@@ -92,8 +92,19 @@ public class RaceTrack extends DrawableObject{
         grid.draw(gc);
         drawTrackLines(gc);
         drawGoalLines(gc);
+        drawCars(gc);
+    }
+    
+    private void drawCars(GraphicsContext gc) {
         for(Car car : cars) {
-            car.draw(gc);
+            if(car.isCrashed()) {
+                car.drawCrashedCross(gc);
+            }
+        }
+        for(Car car : cars) {
+            if(!car.isCrashed()) {
+                car.draw(gc);
+            }
         }
     }
     
