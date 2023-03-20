@@ -25,7 +25,7 @@ public final class Renderer {
     	gc = resizeableCanvas.getGraphicsContext2D();
     	raceTrack = RaceTrack.getRaceTrackInstance();
     	System.out.println("initialized Renderer:");
-    	MapFileManager.loadMap(RaceTrack.getRaceTrackInstance(), "bigmap");
+    	MapFileManager.loadMap(RaceTrack.getRaceTrackInstance(), "schlong");
     }
 
     // binds the anchor pane width/height to the canvas width/height
@@ -68,7 +68,7 @@ public final class Renderer {
     }
     
     public void mouseClicked(final MouseEvent e) {
-        raceTrack.mouseClicked(e);
+        raceTrack.mouseClicked(e,false);
     }
     
     public void mouseDragged(final MouseEvent e) {

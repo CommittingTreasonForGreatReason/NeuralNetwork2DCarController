@@ -102,7 +102,7 @@ public class RaceTrack extends DrawableObject{
     @Override
     public void update(double secondsSinceLastFrame) {
         camera.move();
-        camera.follow((int)cars.get(0).getCenterX(), (int)cars.get(0).getCenterY());
+//        camera.follow((int)cars.get(0).getCenterX(), (int)cars.get(0).getCenterY());
         for(Car car : cars) {
             car.update(secondsSinceLastFrame);
             if(!car.isCrashed()) {
@@ -220,8 +220,11 @@ public class RaceTrack extends DrawableObject{
         }
     }
     
-    public void mouseClicked(final MouseEvent e) {
+    public void mouseClicked(final MouseEvent e, boolean isDrag) {
         if(scrollIndex == 2) {
+        	if(isDrag) {
+        		return;
+        	}
             if(e.getButton() == MouseButton.PRIMARY) {
                 tryEditGoalLine();
             }else if(e.getButton() == MouseButton.SECONDARY) {
@@ -236,7 +239,7 @@ public class RaceTrack extends DrawableObject{
     
     public void mouseDragged(final MouseEvent e) {
         mouseMoved(new Point2D(e.getX(), e.getY()));
-        mouseClicked(e);
+        mouseClicked(e,true);
     }
     
     public void mouseMoved(Point2D mousePosition){
