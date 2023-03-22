@@ -22,7 +22,6 @@ public class RaceTrack extends DrawableObject{
     
     private static RaceTrack raceTrack;
 
-
     private Grid grid;
     private Minimap minimap;
     public static Camera camera;
