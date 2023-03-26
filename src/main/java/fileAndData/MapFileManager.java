@@ -93,7 +93,7 @@ public interface MapFileManager {
             }
             racetrack.spawnCars();
             racetrack.initTrackLines();
-            racetrack.initGoalLines(getGoalLines(fileName));
+            racetrack.initGoalLines(getGoalLines(fileName,racetrack));
             racetrack.initMinimap();
             System.out.println("loaded Map :)");
             System.out.println("Resolution: " + mapBufferedImage.getWidth() + "/" + mapBufferedImage.getHeight());
@@ -102,7 +102,7 @@ public interface MapFileManager {
         }
     }
     
-    private static ArrayList<GoalLine> getGoalLines(String fileName){
+    private static ArrayList<GoalLine> getGoalLines(String fileName,RaceTrack racetrack){
         ArrayList<GoalLine> goalLines = new ArrayList<GoalLine>();
         try {
             File mapTextFile = new File(directory+fileName+".txt");
@@ -115,7 +115,9 @@ public interface MapFileManager {
                 scanner.next();
                 int row2 = scanner.nextInt();
                 int column2 = scanner.nextInt();
-                goalLines.add(new GoalLine(row1, column1, row2, column2));
+                GoalLine goalLine = new GoalLine(row1, column1, row2, column2);
+                goalLine.initLine(GridCell.getSize(), racetrack.getGrid().getGridCells());
+                goalLines.add(goalLine);
             }
             scanner.close();
         } catch (IOException e) {

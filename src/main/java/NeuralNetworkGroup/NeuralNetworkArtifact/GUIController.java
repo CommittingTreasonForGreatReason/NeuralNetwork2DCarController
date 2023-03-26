@@ -1,17 +1,13 @@
 package NeuralNetworkGroup.NeuralNetworkArtifact;
 
-import drawables.RaceTrack;
 import fileAndData.MapFileManager;
 import graphics.GameLoopTimer;
 import graphics.Renderer;
 import graphics.ResizeableCanvas;
 import javafx.fxml.FXML;
-import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
@@ -35,6 +31,7 @@ public class GUIController {
 	
 	static ResizeableCanvas resizeableCanvas;
 	static Renderer renderer;
+	static InputEventHandler inputEventHandler;
 
     @FXML 
     private void initialize() {
@@ -43,6 +40,8 @@ public class GUIController {
     	anchorPane.getChildren().add(0,resizeableCanvas);
     	
     	renderer = new Renderer(resizeableCanvas);
+    	
+    	inputEventHandler = InputEventHandler.getInputEventHandlerInstance();
     	
     	final GameLoopTimer timer = new GameLoopTimer() {
             @Override
@@ -62,10 +61,10 @@ public class GUIController {
         renderer.bind(anchorPane);
         System.out.println("bound renderer to anchorPane:");
         
-        resizeableCanvas.setOnMouseClicked(this::mouseClicked);
-        resizeableCanvas.setOnMouseMoved(this::mouseMoved);
-        resizeableCanvas.setOnMouseDragged(this::mouseDragged);
-        resizeableCanvas.setOnScroll(this::mouseScrolled);
+        resizeableCanvas.setOnMouseClicked(inputEventHandler::mouseClicked);
+        resizeableCanvas.setOnMouseMoved(inputEventHandler::mouseMoved);
+        resizeableCanvas.setOnMouseDragged(inputEventHandler::mouseDragged);
+        resizeableCanvas.setOnScroll(inputEventHandler::mouseScrolled);
         
         resizedCanvas();
         
@@ -124,9 +123,9 @@ public class GUIController {
         if(mapManagerTextField.getText() != "") {
             try {
                 if(isSaveMap) {
-                    MapFileManager.saveMap(RaceTrack.getRaceTrackInstance(), mapManagerTextField.getText());
+                    MapFileManager.saveMap(renderer.getRaceTrack(), mapManagerTextField.getText());
                 }else {
-                    MapFileManager.loadMap(RaceTrack.getRaceTrackInstance(), mapManagerTextField.getText()); 
+                    MapFileManager.loadMap(renderer.getRaceTrack(), mapManagerTextField.getText()); 
                 }
                 mapManagerPane.setVisible(false);
             } catch (Exception e) {
@@ -139,18 +138,5 @@ public class GUIController {
     @FXML
     private void abortMap() {
         mapManagerPane.setVisible(false);
-    }
-    
-    private void mouseScrolled(ScrollEvent e) {
-        renderer.mouseScrolled(e);
-    }
-    private void mouseClicked(final MouseEvent e) {
-        renderer.mouseClicked(e);
-    }
-    private void mouseDragged(final MouseEvent e) {
-        renderer.mouseDragged(e);
-    }
-    private void mouseMoved(final MouseEvent e) {
-        renderer.mouseMoved(new Point2D(e.getX(),e.getY()));
     }
 }

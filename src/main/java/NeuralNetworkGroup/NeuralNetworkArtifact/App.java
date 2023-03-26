@@ -19,6 +19,7 @@ public class App extends Application {
     private static Scene scene;
     private static GUIController guiController;
     private static FXMLLoader fxmlLoader;
+    private static InputEventHandler inputEventHandler;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -26,9 +27,11 @@ public class App extends Application {
         stage.setTitle("1000 IQ Car");
         stage.setScene(scene);
         stage.show();
+        inputEventHandler = InputEventHandler.getInputEventHandlerInstance();
         scene.setOnKeyPressed(this::keyPressed);
-        scene.setOnKeyReleased(this::keyReleased);
+        scene.setOnKeyReleased(inputEventHandler::keyReleased);
         guiController = fxmlLoader.getController();
+        
     }
 
     static void setRoot(String fxml) throws IOException {
@@ -47,11 +50,7 @@ public class App extends Application {
     private void keyPressed(KeyEvent e) {
         if(e.getText().equals("b") || e.getText().equals("r")) {
             guiController.triggerMapDialog(e.getText().equals("b"));
-        }else{
-            RaceTrack.getRaceTrackInstance().keyPressed(e);
         }
-    }
-    private void keyReleased(KeyEvent e) {
-        RaceTrack.getRaceTrackInstance().keyReleased(e);
+        inputEventHandler.keyPressed(e);
     }
 }

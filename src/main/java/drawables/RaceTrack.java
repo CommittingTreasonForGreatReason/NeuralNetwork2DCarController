@@ -2,8 +2,6 @@ package drawables;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -31,9 +29,6 @@ public class RaceTrack extends DrawableObject{
     private ArrayList<GoalLine> goalLines = new ArrayList<GoalLine>();
     private GoalLine editGoalLine = null;
     
-    private byte scrollIndex = 0, maxScrollIndex=2;
-    private boolean shiftDown = false;
-    
     
     private final int amountOfCars = 1;
 
@@ -44,7 +39,7 @@ public class RaceTrack extends DrawableObject{
         double width = GUIController.getCanvasWidth();
         double height = GUIController.getCanvasHeight();
         grid = new Grid(Color.GRAY, new Vector2(width/2, height/2));
-        camera = new Camera(getCenterX(), getCenterY());
+        camera = Camera.getCameraInstance(getCenterX(),getCenterY());
         initTrackLines();
         initMinimap();
     }
@@ -64,6 +59,14 @@ public class RaceTrack extends DrawableObject{
     }
     public ArrayList<GoalLine> getGoalLines() {
         return goalLines;
+    }
+    
+    public void toggleMinimap() {
+        minimap.toggleIsShown();
+    }
+    
+    public void toggleGridLines() {
+        grid.toggleShowGridLines();
     }
     
     public void initMinimap() {
@@ -170,32 +173,11 @@ public class RaceTrack extends DrawableObject{
         
     }
     
-    public void mouseScroll(boolean isScrollUp) {
-        scrollIndex += isScrollUp?1:-1;
-        if(scrollIndex>maxScrollIndex) {
-            scrollIndex = 0;
-        }else if(scrollIndex<0) {
-            scrollIndex = maxScrollIndex;
-        }
-        switch (scrollIndex) {
-        case 0:
-            System.out.println("selected Wall");
-            break;
-        case 1:
-            System.out.println("selected Spawn");
-            break;
-        case 2:
-            System.out.println("selected Goal");
-            break;
-        default:
-            break;
-        }
-    }
-    
     private void tryEditGoalLine() {
         GridCell hoverGridCell = grid.getHoverGridCell();
         if(editGoalLine==null) {
                 editGoalLine = new GoalLine(hoverGridCell.getRow(), hoverGridCell.getColumn(), hoverGridCell.getRow(), hoverGridCell.getColumn());
+                editGoalLine.initLine(GridCell.getSize(),grid.getGridCells());
             }else {
                 goalLines.add(editGoalLine);
                 editGoalLine = null;
@@ -219,7 +201,7 @@ public class RaceTrack extends DrawableObject{
         }
     }
     
-    public void mouseClicked(final MouseEvent e, boolean isDrag) {
+    public void mouseClicked(final MouseEvent e, boolean isDrag, byte scrollIndex, boolean shiftDown) {
         if(scrollIndex == 2) {
         	if(isDrag) {
         		return;
@@ -236,13 +218,18 @@ public class RaceTrack extends DrawableObject{
         }
     }
     
-    public void mouseDragged(final MouseEvent e) {
-        mouseMoved(new Point2D(e.getX(), e.getY()));
-        mouseClicked(e,true);
-    }
+//    public void mouseDragged(final MouseEvent e) {
+//        mouseMoved(new Point2D(e.getX(), e.getY()));
+//        mouseClicked(e,true);
+//    }
     
-    public void mouseMoved(Point2D mousePosition){
-        mousePosition = new Point2D(mousePosition.getX()+camera.getX(), mousePosition.getY()+camera.getY());
+//    public void mouseMoved(Point2D mousePosition){
+//        mousePosition = new Point2D(mousePosition.getX()+camera.getX(), mousePosition.getY()+camera.getY());
+//        grid.trySetHoverGridCell(mousePosition);
+//        updateEditGoalLineEndPoint();
+//    }
+    
+    public void movedMouse(Point2D mousePosition) {
         grid.trySetHoverGridCell(mousePosition);
         updateEditGoalLineEndPoint();
     }
@@ -252,33 +239,8 @@ public class RaceTrack extends DrawableObject{
         if(editGoalLine!=null && hoverGridCell!=null) {
 //            editGoalLine.setLine(editGoalLine.getX1(),editGoalLine.getY1(),hoverGridCell.getCenterX(),hoverGridCell.getCenterY());
             editGoalLine.setRowsAndColumns(editGoalLine.getRow1(), editGoalLine.getColumn1(), hoverGridCell.getRow(), hoverGridCell.getColumn());
+            editGoalLine.initLine(GridCell.getSize(), grid.getGridCells());
         } 
-    }
-    
-    public void keyPressed(KeyEvent e) {
-        for(Car car : cars) {
-            car.keyPressed(e);
-        }
-        if(e.getText().equals("x")) {
-            grid.toggleShowGridLines();
-        }
-        if(e.getText().equals("m")) {
-            minimap.toggleIsShown();
-        }
-        if(e.getCode() == KeyCode.SHIFT) {
-            shiftDown = true;
-        }
-        camera.keyPressed(e);
-    }
-    
-    public void keyReleased(KeyEvent e) {
-        for(Car car : cars) {
-            car.keyReleased(e);
-        }
-        if(e.getCode() == KeyCode.SHIFT) {
-            shiftDown = false;
-        }
-        camera.keyReleased(e);
     }
 
 }

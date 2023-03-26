@@ -6,13 +6,28 @@ import javafx.scene.input.KeyEvent;
 import vectors.Vector2;
 
 public class Camera {
+    
+    public static Camera camera;
+    
     private Vector2 position,velocity;
     private double speed = 5;
     
     
-    public Camera(double x, double y) {
+    
+    private Camera(double x, double y) {
         this.position = new Vector2(x, y);
         this.velocity = new Vector2(0, 0);
+    }
+    
+    public static Camera getCameraInstance(double x, double y) {
+        if (camera == null) {
+            camera = new Camera(x,y);
+        }
+        return camera;
+    }
+    
+    public static Camera getCameraInstance() {
+        return camera;
     }
     
     public double getX(){

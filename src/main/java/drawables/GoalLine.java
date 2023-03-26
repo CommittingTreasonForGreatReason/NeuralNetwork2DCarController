@@ -16,7 +16,6 @@ public class GoalLine {
         this.row2 = row2;
         this.column1 = column1;
         this.column2 = column2;
-        initLine(GridCell.getSize());
     }
     
     public int getRow1() {
@@ -41,7 +40,6 @@ public class GoalLine {
         this.row2 = row2;
         this.column1 = column1;
         this.column2 = column2;
-        initLine(GridCell.getSize());
     }
     
     public void draw(GraphicsContext gc, int index) {
@@ -53,9 +51,7 @@ public class GoalLine {
         gc.strokeText(index+"", line.getBounds().getCenterX()-gc.getFont().getSize()/3, line.getBounds().getCenterY());
     }
     
-    public void initLine(double gridCellSize) {
-        GridCell[][] gridCells = RaceTrack.getRaceTrackInstance().getGrid().getGridCells();
-        
+    public void initLine(double gridCellSize, GridCell[][] gridCells) {
         line = new Line2D.Double(gridCells[row1][column1].getCenterX(), gridCells[row1][column1].getCenterY(),
                 gridCells[row2][column2].getCenterX(), gridCells[row2][column2].getCenterY());
     }
