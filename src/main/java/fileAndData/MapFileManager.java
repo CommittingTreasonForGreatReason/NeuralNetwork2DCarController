@@ -15,9 +15,9 @@ import drawables.Grid;
 import drawables.GridCell;
 import drawables.RaceTrack;
 
-public class MapFileManager {
+public interface MapFileManager {
     
-    private static String directory = "src/main/resources/";
+    static final String directory = "src/main/resources/";
     
     public static void saveMap(RaceTrack racetrack, String fileName) {
         System.out.println("saving map...");
