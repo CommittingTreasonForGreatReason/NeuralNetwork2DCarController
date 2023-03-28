@@ -22,13 +22,12 @@ public class RaceTrack extends DrawableObject{
 
     private Grid grid;
     private Minimap minimap;
-    public static Camera camera;
+    public Camera camera;
     
     private ArrayList<Car> cars = new ArrayList<Car>();
     private ArrayList<Line2D> trackLines;
     private ArrayList<GoalLine> goalLines = new ArrayList<GoalLine>();
     private GoalLine editGoalLine = null;
-    
     
     private final int amountOfCars = 1;
 
@@ -217,17 +216,6 @@ public class RaceTrack extends DrawableObject{
             initTrackLines();
         }
     }
-    
-//    public void mouseDragged(final MouseEvent e) {
-//        mouseMoved(new Point2D(e.getX(), e.getY()));
-//        mouseClicked(e,true);
-//    }
-    
-//    public void mouseMoved(Point2D mousePosition){
-//        mousePosition = new Point2D(mousePosition.getX()+camera.getX(), mousePosition.getY()+camera.getY());
-//        grid.trySetHoverGridCell(mousePosition);
-//        updateEditGoalLineEndPoint();
-//    }
     
     public void movedMouse(Point2D mousePosition) {
         grid.trySetHoverGridCell(mousePosition);

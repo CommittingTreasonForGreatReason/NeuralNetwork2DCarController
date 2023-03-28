@@ -13,10 +13,12 @@ public class InputEventHandler {
     private static InputEventHandler inputEventHandler;
     
     private boolean shiftDown = false;
-    private byte scrollIndex = 0, maxScrollIndex=2;
+    private byte scrollIndex = 0;
+    private final byte maxScrollIndex=2;
     
     private RaceTrack raceTrack;
     private Camera camera;
+    
     public InputEventHandler() {
         raceTrack = RaceTrack.getRaceTrackInstance();
         camera = Camera.getCameraInstance();
@@ -28,7 +30,6 @@ public class InputEventHandler {
         }
         return inputEventHandler;
     }
-    
     public void mouseScrolled(ScrollEvent e) {
         mouseScroll(e.getDeltaY()>0);
     }

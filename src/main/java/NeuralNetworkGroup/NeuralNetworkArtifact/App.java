@@ -9,8 +9,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-import drawables.RaceTrack;
-
 /**
  * JavaFX App
  */

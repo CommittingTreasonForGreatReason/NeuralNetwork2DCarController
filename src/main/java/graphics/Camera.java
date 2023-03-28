@@ -12,8 +12,6 @@ public class Camera {
     private Vector2 position,velocity;
     private double speed = 5;
     
-    
-    
     private Camera(double x, double y) {
         this.position = new Vector2(x, y);
         this.velocity = new Vector2(0, 0);
