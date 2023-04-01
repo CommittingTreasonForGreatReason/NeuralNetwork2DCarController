@@ -1,5 +1,6 @@
 package graphics;
 
+import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
 import NeuralNetworkGroup.NeuralNetworkArtifact.GUIController;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -10,7 +11,7 @@ public class Camera {
     public static Camera camera;
     
     private Vector2 position,velocity;
-    private double speed = 5;
+    private double speed = Constants.CAMERASPEED;
     
     private Camera(double x, double y) {
         this.position = new Vector2(x, y);

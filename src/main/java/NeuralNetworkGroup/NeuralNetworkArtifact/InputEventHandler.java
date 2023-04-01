@@ -52,10 +52,13 @@ public class InputEventHandler {
         }
         if(e.getText().equals("x")) {
             raceTrack.toggleGridLines();
-        }
+        }else
         if(e.getText().equals("m")) {
             raceTrack.toggleMinimap();
-        }
+        }else
+        if(e.getText().equals("g")) {
+            raceTrack.toggleGoalLines();
+        }else
         if(e.getCode() == KeyCode.SHIFT) {
             shiftDown = true;
         }

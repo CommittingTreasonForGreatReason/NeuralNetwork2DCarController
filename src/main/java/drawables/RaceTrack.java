@@ -28,6 +28,7 @@ public class RaceTrack extends DrawableObject{
     private ArrayList<Line2D> trackLines;
     private ArrayList<GoalLine> goalLines = new ArrayList<GoalLine>();
     private GoalLine editGoalLine = null;
+    private boolean showGoalLines = true;
     
     private final int amountOfCars = 1;
 
@@ -66,6 +67,10 @@ public class RaceTrack extends DrawableObject{
     
     public void toggleGridLines() {
         grid.toggleShowGridLines();
+    }
+    
+    public void toggleGoalLines() {
+        showGoalLines = !showGoalLines;
     }
     
     public void initMinimap() {
@@ -153,11 +158,14 @@ public class RaceTrack extends DrawableObject{
     private void drawGoalLines(GraphicsContext gc) {
         gc.setLineWidth(3);
         gc.setFont(new Font("Arial",24));
-        int lineIndex = 0;
-        for(GoalLine goalLine : goalLines) {
-            goalLine.draw(gc, lineIndex);
-            lineIndex++;
+        if(showGoalLines) {
+            int lineIndex = 0;
+            for(GoalLine goalLine : goalLines) {
+                goalLine.draw(gc, lineIndex);
+                lineIndex++;
+            }
         }
+        
         if(editGoalLine!=null) {
             drawEditGoalLine(gc);
         }

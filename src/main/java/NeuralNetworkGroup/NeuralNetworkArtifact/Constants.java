@@ -14,4 +14,7 @@ public interface Constants {
     
     public static final Color CAR_COLOR = Color.BLUE;
     public static final Color CAR_CRASHED_COLOR = Color.RED;
+    
+    public static final double CAMERASPEED = 5;
+    public static final String STARTMAP = "map";
 }

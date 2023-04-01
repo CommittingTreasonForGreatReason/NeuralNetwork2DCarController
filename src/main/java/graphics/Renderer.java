@@ -1,5 +1,6 @@
 package graphics;
 
+import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
 import drawables.RaceTrack;
 import fileAndData.MapFileManager;
 import javafx.geometry.Point2D;
@@ -25,7 +26,7 @@ public final class Renderer {
     	gc = resizeableCanvas.getGraphicsContext2D();
     	raceTrack = RaceTrack.getRaceTrackInstance();
     	System.out.println("initialized Renderer:");
-    	MapFileManager.loadMap(raceTrack, "schlong");
+    	MapFileManager.loadMap(raceTrack, Constants.STARTMAP);
     }
     
     public RaceTrack getRaceTrack() {
