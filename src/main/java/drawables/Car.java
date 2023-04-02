@@ -8,6 +8,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import neuralNetwork.NeuralNetwork;
+import neuralNetwork.NeuralNetworkVisualizer;
 import vectors.Vector2;
 import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
 import NeuralNetworkGroup.NeuralNetworkArtifact.GUIController;
@@ -25,6 +27,7 @@ public class Car extends DrawableObject{
     
     private boolean isCrashed = false;
     private double fitness = 0;
+    private NeuralNetwork neuralNetwork;
     
     public Car(Vector2 centerPoint) {
         super(Constants.CAR_COLOR, centerPoint);
@@ -32,6 +35,7 @@ public class Car extends DrawableObject{
         desiredDirection = new Vector2(1, 1);
         desiredDirection.setMagnitude(10);
         hitBoxRectangle = new Rectangle(centerPoint.getX()-width/2,centerPoint.getY()-width/2,width,width);
+        neuralNetwork = new NeuralNetwork(7+5,8,4,2);
     }
     
     public static void setSizes(){
@@ -104,7 +108,10 @@ public class Car extends DrawableObject{
 //            drawHitBox(gc);
             
             drawVectors(gc);
-        
+    }
+    
+    public void drawNeuralNetwork(GraphicsContext gc) {
+        NeuralNetworkVisualizer.visualizeNeuralNetwork(gc, neuralNetwork, GUIController.getCanvasWidth(), GUIController.getCanvasHeight());
     }
     
     public void drawCrashedCross(GraphicsContext gc) {

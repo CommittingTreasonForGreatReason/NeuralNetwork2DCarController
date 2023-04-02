@@ -28,7 +28,7 @@ public class RaceTrack extends DrawableObject{
     private ArrayList<Line2D> trackLines;
     private ArrayList<GoalLine> goalLines = new ArrayList<GoalLine>();
     private GoalLine editGoalLine = null;
-    private boolean showGoalLines = true;
+    private boolean showGoalLines = true, showNeuralNetwork = true;
     
     private final int amountOfCars = 1;
 
@@ -71,6 +71,10 @@ public class RaceTrack extends DrawableObject{
     
     public void toggleGoalLines() {
         showGoalLines = !showGoalLines;
+    }
+    
+    public void toggleNeuralNetwork() {
+        showNeuralNetwork = !showNeuralNetwork;
     }
     
     public void initMinimap() {
@@ -131,6 +135,9 @@ public class RaceTrack extends DrawableObject{
         gc.translate(camera.getX(), camera.getY());
         if(minimap.isShown()) {
             minimap.draw(gc);
+        }
+        if(showNeuralNetwork) {
+            cars.get(0).drawNeuralNetwork(gc);
         }
     }
     

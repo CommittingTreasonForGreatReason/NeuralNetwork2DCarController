@@ -59,6 +59,9 @@ public class InputEventHandler {
         if(e.getText().equals("g")) {
             raceTrack.toggleGoalLines();
         }else
+        if(e.getText().equals("n")) {
+            raceTrack.toggleNeuralNetwork();     
+        }else
         if(e.getCode() == KeyCode.SHIFT) {
             shiftDown = true;
         }
