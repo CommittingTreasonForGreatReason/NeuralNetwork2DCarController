@@ -5,11 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class NeuralNetworkFileManager {
+public interface NeuralNetworkFileManager {
+	
+	static final String directory = "src/main/resources/";
 	
 	public static void saveNeuralNetworkAsFile(NeuralNetwork neuralNetwork, String fileName, int amountOfDecimalPoints) {
 		try {
-			File neuralNetworkTextFile = new File("src/"+fileName+".txt");
+			File neuralNetworkTextFile = new File(directory+fileName+".txt");
 			// only creates a new File if the File does not exist !!
 			neuralNetworkTextFile.createNewFile();
 			PrintWriter pw = new PrintWriter(neuralNetworkTextFile);
@@ -82,13 +84,14 @@ public class NeuralNetworkFileManager {
 			}
 			pw.flush();
 			pw.close();
+			
 		} catch (Exception e) {
 
 		}
 	}
 	public static NeuralNetwork readNeuralNetworkFromFile(String fileName) {
 		try {
-			File neuralNetworkTextFile = new File("src/"+fileName+".txt");
+			File neuralNetworkTextFile = new File(directory+fileName+".txt");
 			Scanner scanner = new Scanner(neuralNetworkTextFile);
 			scanner.next();
 			int nInputNodes = Integer.parseInt(scanner.next());

@@ -77,6 +77,10 @@ public class RaceTrack extends DrawableObject{
         showNeuralNetwork = !showNeuralNetwork;
     }
     
+    public void saveNeuralNetwork() {
+    	cars.get(0).saveNeuralNetwork("car0");
+    }
+    
     public void initMinimap() {
         double width = GUIController.getCanvasWidth();
         double height = GUIController.getCanvasHeight();

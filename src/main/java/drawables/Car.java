@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import neuralNetwork.NeuralNetwork;
+import neuralNetwork.NeuralNetworkFileManager;
 import neuralNetwork.NeuralNetworkVisualizer;
 import vectors.Vector2;
 import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
@@ -36,6 +37,14 @@ public class Car extends DrawableObject{
         desiredDirection.setMagnitude(10);
         hitBoxRectangle = new Rectangle(centerPoint.getX()-width/2,centerPoint.getY()-width/2,width,width);
         neuralNetwork = new NeuralNetwork(7+5,8,4,2);
+    }
+    
+    public void saveNeuralNetwork(String fileName) {
+    	NeuralNetworkFileManager.saveNeuralNetworkAsFile(neuralNetwork, fileName, 4);
+    }
+    
+    public void loadNeuralNetwork(String fileName) {
+    	neuralNetwork = NeuralNetworkFileManager.readNeuralNetworkFromFile(fileName);
     }
     
     public static void setSizes(){
