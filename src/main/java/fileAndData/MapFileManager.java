@@ -17,7 +17,7 @@ import drawables.RaceTrack;
 
 public interface MapFileManager {
     
-    static final String directory = "src/main/resources/";
+    static final String directory = "src/main/resources/maps/";
     
     public static void saveMap(RaceTrack racetrack, String fileName) {
         System.out.println("saving map...");

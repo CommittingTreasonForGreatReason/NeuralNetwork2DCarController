@@ -44,7 +44,7 @@ public class Car extends DrawableObject{
     }
     
     public void loadNeuralNetwork(String fileName) {
-    	neuralNetwork = NeuralNetworkFileManager.readNeuralNetworkFromFile(fileName);
+    	neuralNetwork = NeuralNetworkFileManager.loadNeuralNetwork(fileName);
     }
     
     public static void setSizes(){

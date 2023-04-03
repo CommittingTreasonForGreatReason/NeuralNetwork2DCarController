@@ -46,8 +46,11 @@ public class App extends Application {
     }
     
     private void keyPressed(KeyEvent e) {
-        if(e.getText().equals("b") || e.getText().equals("r")) {
-            guiController.triggerMapDialog(e.getText().equals("b"));
+        if(e.getText().equals("b")) {
+            guiController.triggerMapDialog();
+        }else
+        if(e.getText().equals("v")) {
+            guiController.triggerNeuralNetworkDialog();
         }
         inputEventHandler.keyPressed(e);
     }

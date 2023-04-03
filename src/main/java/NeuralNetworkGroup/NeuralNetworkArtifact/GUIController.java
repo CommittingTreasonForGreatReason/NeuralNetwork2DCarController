@@ -1,5 +1,6 @@
 package NeuralNetworkGroup.NeuralNetworkArtifact;
 
+import drawables.RaceTrack;
 import fileAndData.MapFileManager;
 import graphics.GameLoopTimer;
 import graphics.Renderer;
@@ -25,9 +26,9 @@ public class GUIController {
 	@FXML
     Pane mapManagerPane,mapManagerPaneBackGround;
 	@FXML
-	Button confirmButton,abortButton;
+	Button saveButton,loadButton,abortButton;
 	
-	private boolean isSaveMap;
+	private boolean isMapDialog;
 	
 	static ResizeableCanvas resizeableCanvas;
 	static Renderer renderer;
@@ -97,9 +98,13 @@ public class GUIController {
         double totalWidth = mapManagerPane.getPrefWidth();
         double totalHeight = mapManagerPane.getPrefHeight();
         
-        confirmButton.setLayoutX(centerX - totalWidth/16 - confirmButton.getPrefWidth()/2);
-        confirmButton.setLayoutY(centerY + totalHeight/8);
-        abortButton.setLayoutX(centerX + totalWidth/16 - abortButton.getPrefWidth()/2);
+        saveButton.setLayoutX(centerX - totalWidth/12 - saveButton.getPrefWidth()/2);
+        saveButton.setLayoutY(centerY + totalHeight/8);
+        
+        loadButton.setLayoutX(centerX - loadButton.getPrefWidth()/2);
+        loadButton.setLayoutY(centerY + totalHeight/8);
+        
+        abortButton.setLayoutX(centerX + totalWidth/12 - abortButton.getPrefWidth()/2);
         abortButton.setLayoutY(centerY + totalHeight/8);
     }
     
@@ -113,30 +118,55 @@ public class GUIController {
     	return resizeableCanvas.getHeight();
     }
     
-    public void triggerMapDialog(boolean isSaveMap) {
+    public void triggerNeuralNetworkDialog() {
         mapManagerPane.setVisible(true);
-        this.isSaveMap = isSaveMap;
-        mapManagerLabel.setText("do you want to " + (isSaveMap?"save":"load")  + " this map?");
+        this.isMapDialog = false;
+        mapManagerLabel.setText("do you want to " + "save / load"  + " this neural network?");
+    }
+    
+    public void triggerMapDialog() {
+        mapManagerPane.setVisible(true);
+        this.isMapDialog = true;
+        mapManagerLabel.setText("do you want to " + "save / load"  + " this map?");
     }
     @FXML
-    private void confirmMap() {
+    private void save() {
         if(mapManagerTextField.getText() != "") {
             try {
-                if(isSaveMap) {
+                if(isMapDialog) {
                     MapFileManager.saveMap(renderer.getRaceTrack(), mapManagerTextField.getText());
                 }else {
-                    MapFileManager.loadMap(renderer.getRaceTrack(), mapManagerTextField.getText()); 
+                    RaceTrack.getRaceTrackInstance().saveNeuralNetwork(mapManagerTextField.getText());
                 }
                 mapManagerPane.setVisible(false);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }else {
-            System.err.println("Error type in a valid map name");
+            System.err.println("Error type in a valid name");
         }
     }
     @FXML
-    private void abortMap() {
+    private void load() {
+        if(mapManagerTextField.getText() != "") {
+            try {
+                if(isMapDialog) {
+                    MapFileManager.loadMap(renderer.getRaceTrack(), mapManagerTextField.getText()); 
+                }else {
+                    RaceTrack.getRaceTrackInstance().loadNeuralNetwork(mapManagerTextField.getText());
+                }
+                
+                mapManagerPane.setVisible(false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else {
+            System.err.println("Error type in a valid name");
+        }
+    }
+    
+    @FXML
+    private void abortDialog() {
         mapManagerPane.setVisible(false);
     }
 }

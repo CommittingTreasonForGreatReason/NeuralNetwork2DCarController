@@ -17,17 +17,22 @@
                   <Font size="24.0" />
                </font>
             </TextField>
-            <Label fx:id="mapManagerLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="18.0" layoutY="69.0" prefHeight="78.0" prefWidth="565.0" text="do you want to save this map?" textAlignment="CENTER" textFill="WHITE">
+            <Label fx:id="mapManagerLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="18.0" layoutY="69.0" prefHeight="78.0" prefWidth="565.0" text="do you want to save/load this map?" textAlignment="CENTER" textFill="WHITE">
                <font>
-                  <Font size="42.0" />
+                  <Font size="26.0" />
                </font>
             </Label>
-            <Button fx:id="confirmButton" layoutX="97.0" layoutY="296.0" mnemonicParsing="false" onAction="#confirmMap" prefHeight="59.0" prefWidth="133.0" text="Confirm" textAlignment="CENTER">
+            <Button fx:id="saveButton" layoutX="101.0" layoutY="296.0" mnemonicParsing="false" onAction="#save" prefHeight="59.0" prefWidth="133.0" text="Save" textAlignment="CENTER">
                <font>
                   <Font size="24.0" />
                </font>
             </Button>
-            <Button fx:id="abortButton" layoutX="369.0" layoutY="296.0" mnemonicParsing="false" onAction="#abortMap" prefHeight="59.0" prefWidth="133.0" text="Abort" textAlignment="CENTER">
+            <Button fx:id="abortButton" layoutX="367.0" layoutY="296.0" mnemonicParsing="false" onAction="#abortDialog" prefHeight="59.0" prefWidth="133.0" text="Abort" textAlignment="CENTER">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Button>
+            <Button fx:id="loadButton" layoutX="234.0" layoutY="296.0" mnemonicParsing="false" onAction="#load" prefHeight="59.0" prefWidth="133.0" text="Load" textAlignment="CENTER">
                <font>
                   <Font size="24.0" />
                </font>

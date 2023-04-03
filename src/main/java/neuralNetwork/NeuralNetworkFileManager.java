@@ -7,9 +7,10 @@ import java.util.Scanner;
 
 public interface NeuralNetworkFileManager {
 	
-	static final String directory = "src/main/resources/";
+	static final String directory = "src/main/resources/neuralNetworks/";
 	
 	public static void saveNeuralNetworkAsFile(NeuralNetwork neuralNetwork, String fileName, int amountOfDecimalPoints) {
+	    System.out.println("saving neural network...");
 		try {
 			File neuralNetworkTextFile = new File(directory+fileName+".txt");
 			// only creates a new File if the File does not exist !!
@@ -84,12 +85,13 @@ public interface NeuralNetworkFileManager {
 			}
 			pw.flush();
 			pw.close();
-			
+			System.out.println("saved neural network :)");
 		} catch (Exception e) {
 
 		}
 	}
-	public static NeuralNetwork readNeuralNetworkFromFile(String fileName) {
+	public static NeuralNetwork loadNeuralNetwork(String fileName) {
+	    System.out.println("loading neural network...");
 		try {
 			File neuralNetworkTextFile = new File(directory+fileName+".txt");
 			Scanner scanner = new Scanner(neuralNetworkTextFile);
@@ -178,6 +180,7 @@ public interface NeuralNetworkFileManager {
 				neuralNetwork.biasMatrixHH[nHiddenLayers].matrix[i][0] = biasValue;
 			}
 			scanner.close();
+			System.out.println("loaded neural network :)");
 			return neuralNetwork;
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
