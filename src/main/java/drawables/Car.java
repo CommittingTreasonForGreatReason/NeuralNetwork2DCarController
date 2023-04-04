@@ -29,6 +29,11 @@ public class Car extends DrawableObject{
     private boolean isCrashed = false;
     private double fitness = 0;
     private NeuralNetwork neuralNetwork;
+    // Sensors
+    private static double sensorRange = 500;
+    Vector2[] sensorVectors = new Vector2[7];
+    Vector2[] trackSensorPoints = new Vector2[7];   
+    ArrayList<Vector2> intersectionPoints = new ArrayList<Vector2>();
     
     public Car(Vector2 centerPoint) {
         super(Constants.CAR_COLOR, centerPoint);
@@ -37,6 +42,27 @@ public class Car extends DrawableObject{
         desiredDirection.setMagnitude(10);
         hitBoxRectangle = new Rectangle(centerPoint.getX()-width/2,centerPoint.getY()-width/2,width,width);
         neuralNetwork = new NeuralNetwork(7+5,8,4,2);
+        updateSensorVectors();
+        updateTrackSensorPoints();
+    }
+    
+    private void updateSensorVectors() {
+        int amountOfSensors = 7;
+        int range = 120;
+        int angleStep = 120 / (amountOfSensors-1);
+        for(int i = 0;i<amountOfSensors;i++) {
+            sensorVectors[i] = new Vector2(0, 0);
+            sensorVectors[i].setAngle(angleStep*i-range/2+desiredDirection.getAngle());
+            sensorVectors[i].setMagnitude(sensorRange);
+        }
+    }
+    
+    private void updateTrackSensorPoints() {
+        intersectionPoints.clear();
+        int amountOfSensors = sensorVectors.length;
+        for(int i = 0;i<amountOfSensors;i++) {
+            trackSensorPoints[i] = getPointClosestTrackIntersection(sensorVectors[i]);
+        }
     }
     
     public void saveNeuralNetwork(String fileName) {
@@ -67,6 +93,8 @@ public class Car extends DrawableObject{
             move(secondsSinceLastFrame);
         }
         hitBoxRectangle = new Rectangle(centerPoint.getX()-width/2,centerPoint.getY()-width/2,width,width);
+        updateSensorVectors();
+        updateTrackSensorPoints();
     }
     
     private void move(double secondsSinceLastFrame) {
@@ -100,6 +128,48 @@ public class Car extends DrawableObject{
         }
     }
     
+    public Vector2 getPointClosestTrackIntersection(Vector2 v2) {
+        double closest = Double.MAX_VALUE;
+        Vector2 vectorPoint = null;
+        Line2D vectorLine = new Line2D.Double(centerPoint.getX(), centerPoint.getY(), centerPoint.getX() + v2.getX(), centerPoint.getY() + v2.getY());
+        ArrayList<Line2D> trackLines = RaceTrack.getRaceTrackInstance().getTrackLines();
+        for(Line2D trackLine : trackLines) {
+            if(trackLine.intersectsLine(vectorLine)){
+                Vector2 vectorPointCurrent = getLineIntersectionPoint(trackLine,vectorLine);
+                intersectionPoints.add(vectorPointCurrent);
+                double distanceNoSqrt = getDistanceFromPointNoSqrt(vectorPointCurrent);
+                if(distanceNoSqrt < v2.getMagnitude()*v2.getMagnitude() && distanceNoSqrt < closest) {
+                    vectorPoint = vectorPointCurrent;
+                    closest = distanceNoSqrt;
+                }
+                
+            }
+        }
+        return vectorPoint;
+    }
+    
+    public Vector2 getLineIntersectionPoint(Line2D line1,Line2D line2) {
+        // ax + c = line1
+        // bx + d = line2
+        double a = (line1.getY1() - line1.getY2()) / (line1.getX1() - line1.getX2()); 
+        double b = (line2.getY1() - line2.getY2()) / (line2.getX1() - line2.getX2()); 
+        a = line1.getX1() == line1.getX2()?10:a;
+        b = line2.getX1() == line2.getX2()?10:b;
+        float c = (int) (line1.getY1() - a*line1.getX1());
+        float d = (int) (line2.getY1() - b*line2.getX1());
+        
+        float x = (float) ((d-c) / (a-b));
+        float y = (float) (a*x + c);
+        
+        return new Vector2(x,y);
+    }
+    
+    public double getDistanceFromPointNoSqrt(Vector2 v2) {
+        double ak = v2.getX() - centerPoint.getX();
+        double gk = v2.getY() - centerPoint.getY();
+        return ak*ak + gk*gk;
+    }
+    
 
     @Override
     public void draw(GraphicsContext gc) {
@@ -115,8 +185,32 @@ public class Car extends DrawableObject{
             
             gc.translate(-centerPoint.getX(), -centerPoint.getY());
 //            drawHitBox(gc);
-            
+            drawSensorVectors(gc);
             drawVectors(gc);
+            drawTrackSensorPoints(gc);
+    }
+    
+    private void drawSensorVectors(GraphicsContext gc) {
+        gc.setStroke(Color.BLUE);
+        for(Vector2 sensorVector : sensorVectors) {
+            gc.strokeLine(centerPoint.getX(), centerPoint.getY(), centerPoint.getX() + sensorVector.getX(), centerPoint.getY() + sensorVector.getY());
+        }
+    }
+    
+    private void drawTrackSensorPoints(GraphicsContext gc) {
+        
+        gc.setFill(Color.MAGENTA);
+        for(Vector2 trackSensorPoint : intersectionPoints) {
+            if(trackSensorPoint != null) {
+                gc.fillOval(trackSensorPoint.getX()-5, trackSensorPoint.getY()-5, 10, 10);
+            }
+        }
+        gc.setFill(Color.RED);
+        for(Vector2 trackSensorPoint : trackSensorPoints) {
+            if(trackSensorPoint != null) {
+                gc.fillOval(trackSensorPoint.getX()-5, trackSensorPoint.getY()-5, 10, 10);
+            }
+        }
     }
     
     public void drawNeuralNetwork(GraphicsContext gc) {

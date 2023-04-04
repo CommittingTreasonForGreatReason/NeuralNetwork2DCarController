@@ -62,8 +62,8 @@ public class InputEventHandler {
         if(e.getText().equals("n")) {
             raceTrack.toggleNeuralNetwork();     
         }else
-        if(e.getText().equals("v")) {
-              
+        if(e.getText().equals("f")) {
+            raceTrack.toggleCameraFollowCar();
         }else
         if(e.getCode() == KeyCode.SHIFT) {
             shiftDown = true;

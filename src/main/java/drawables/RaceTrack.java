@@ -29,7 +29,7 @@ public class RaceTrack extends DrawableObject{
     private ArrayList<GoalLine> goalLines = new ArrayList<GoalLine>();
     private GoalLine editGoalLine = null;
     private boolean showGoalLines = true, showNeuralNetwork = true;
-    
+    private boolean cameraFollowCar = false;
     private final int amountOfCars = 1;
 
     private RaceTrack(Color baseColor) {
@@ -61,6 +61,10 @@ public class RaceTrack extends DrawableObject{
         return goalLines;
     }
     
+    public ArrayList<Line2D> getTrackLines() {
+        return trackLines;
+    }
+    
     public void toggleMinimap() {
         minimap.toggleIsShown();
     }
@@ -71,6 +75,10 @@ public class RaceTrack extends DrawableObject{
     
     public void toggleGoalLines() {
         showGoalLines = !showGoalLines;
+    }
+    
+    public void toggleCameraFollowCar() {
+        cameraFollowCar = !cameraFollowCar;
     }
     
     public void toggleNeuralNetwork() {
@@ -119,8 +127,11 @@ public class RaceTrack extends DrawableObject{
     
     @Override
     public void update(double secondsSinceLastFrame) {
-        camera.move();
-//        camera.follow((int)cars.get(0).getCenterX(), (int)cars.get(0).getCenterY());
+        if(cameraFollowCar) {
+            camera.follow((int)cars.get(0).getCenterX(), (int)cars.get(0).getCenterY());
+        }else {
+            camera.move(); 
+        }
         for(Car car : cars) {
             car.update(secondsSinceLastFrame);
             if(!car.isCrashed()) {
