@@ -3,11 +3,13 @@ package drawables;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
+import NeuralNetCar.Vector2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import neuralNetwork.Matrix;
 import neuralNetwork.NeuralNetwork;
 import neuralNetwork.NeuralNetworkFileManager;
 import neuralNetwork.NeuralNetworkVisualizer;
@@ -95,6 +97,14 @@ public class Car extends DrawableObject{
         hitBoxRectangle = new Rectangle(centerPoint.getX()-width/2,centerPoint.getY()-width/2,width,width);
         updateSensorVectors();
         updateTrackSensorPoints();
+    }
+    
+    private void steerCar() {
+    	Matrix inputMatrix = new Matrix(neuralNetwork.getnInputNodes(), 1);
+    	int i = 0;
+		for(;i<trackSensorPoints.length;i++) {
+			
+		}
     }
     
     private void move(double secondsSinceLastFrame) {

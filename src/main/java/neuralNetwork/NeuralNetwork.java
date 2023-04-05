@@ -46,6 +46,10 @@ public class NeuralNetwork {
 		biasMatrixHH[nHiddenLayers].randomize();
 	}
 	
+	public int getnInputNodes() {
+		return nInputNodes;
+	}
+	
 	public NeuralNetwork getCopyNeuralNetwork() {
 		NeuralNetwork copyOfNeuralNetwork =  new NeuralNetwork(nInputNodes, nHiddenNodes, nOutputNodes, nHiddenLayers);
 		for(int index = 0;index<weightMatrixHH.length;index++) {
