@@ -68,6 +68,12 @@ public class InputEventHandler {
         if(e.getText().equals("h")) {
             raceTrack.toggleHitbox();
         }else
+        if(e.getText().equals("y")) {
+            raceTrack.toggleSensors();
+        }else
+        if(e.getText().equals("k")) {
+            raceTrack.startNewCarGeneration(raceTrack.getBestCar());
+        }else
         if(e.getCode() == KeyCode.SHIFT) {
             shiftDown = true;
         }

@@ -25,12 +25,13 @@ public class RaceTrack extends DrawableObject{
     public Camera camera;
     
     private ArrayList<Car> cars = new ArrayList<Car>();
+    private Car bestCarLastGen = null;
     private ArrayList<Line2D> trackLines;
     private ArrayList<GoalLine> goalLines = new ArrayList<GoalLine>();
     private GoalLine editGoalLine = null;
-    private boolean showGoalLines = true, showNeuralNetwork = true, showHitbox = true;
+    private boolean showGoalLines = true, showNeuralNetwork = true, showHitbox = false, showSensors = false;
     private boolean cameraFollowCar = false;
-    private final int amountOfCars = 1;
+    private final int amountOfCars = 50;
 
     private RaceTrack(Color baseColor) {
         super(baseColor, new Vector2(GUIController.getCanvasWidth()/2, GUIController.getCanvasHeight()/2));
@@ -89,12 +90,22 @@ public class RaceTrack extends DrawableObject{
         showHitbox = !showHitbox;
     }
     
+    public void toggleSensors() {
+        showSensors = !showSensors;
+    }
+    
     public void saveNeuralNetwork(String fileName) {
-    	cars.get(0).saveNeuralNetwork(fileName);
+        if(bestCarLastGen != null) {
+            bestCarLastGen.saveNeuralNetwork(fileName);
+        }else {
+            System.err.println("couldn't save Neural Network please wait 1 generation");
+        }
+        
     }
     
     public void loadNeuralNetwork(String fileName) {
         cars.get(0).loadNeuralNetwork(fileName);
+        startNewCarGeneration(cars.get(0));
     }
     
     public void initMinimap() {
@@ -117,6 +128,30 @@ public class RaceTrack extends DrawableObject{
             }
             cars.add(new Car(carPosition));
         }
+    }
+    
+    public void startNewCarGeneration(Car bestCar) {
+        bestCarLastGen = bestCar;
+        cars.clear();
+        spawnCars();
+        cars.get(0).setNeuralNetwork(bestCarLastGen.getNeuralNetworkCopy());;
+        for(int i = 1;i<cars.size();i++) {
+            Car car = cars.get(i);
+            car.setNeuralNetwork(bestCarLastGen.getMutatedNeuralNetworkCopy());
+        }
+    }
+    
+    public Car getBestCar() {
+        double bestFitness = 0;
+        Car currentBestCar = cars.get(0);
+        for(Car car : cars) {
+            double currentFitness = car.getFitness();
+            if(currentFitness > bestFitness) {
+                bestFitness = currentFitness;
+                currentBestCar = car;
+            }
+        }
+        return currentBestCar;
     }
     
     public void initTrackLines() {
@@ -159,8 +194,8 @@ public class RaceTrack extends DrawableObject{
         if(minimap.isShown()) {
             minimap.draw(gc);
         }
-        if(showNeuralNetwork) {
-            cars.get(0).drawNeuralNetwork(gc);
+        if(showNeuralNetwork && bestCarLastGen!=null) {
+            bestCarLastGen.drawNeuralNetwork(gc);
         }
     }
     
@@ -173,6 +208,11 @@ public class RaceTrack extends DrawableObject{
         for(Car car : cars) {
             if(!car.isCrashed()) {
                 car.draw(gc);
+                if(showSensors) {
+                    car.drawSensorVectors(gc);
+                    car.drawVectors(gc);
+                    car.drawTrackSensorPoints(gc);
+                }
             }
         }
         if(showHitbox) {
