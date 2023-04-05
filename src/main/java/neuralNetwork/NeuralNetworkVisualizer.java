@@ -2,13 +2,19 @@ package neuralNetwork;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 public interface NeuralNetworkVisualizer {
     
     static final Color redColor = Color.RED;
     static final Color greenColor = Color.GREEN;    
+    static final Font labelFont = new Font("Arial",20);   
     
     public static void visualizeNeuralNetwork(GraphicsContext gc, NeuralNetwork neuralNetwork, double w, double h) {
+        visualizeNeuralNetwork(null, null, gc, neuralNetwork, w, h);
+    }
+    
+    public static void visualizeNeuralNetwork(String inputLabels,String outputLabels,GraphicsContext gc, NeuralNetwork neuralNetwork, double w, double h) {
         int nHiddenLayers = neuralNetwork.nHiddenLayers;
         int nInputNodes = neuralNetwork.nInputNodes;
         int nHiddenNodes = neuralNetwork.nHiddenNodes;
@@ -33,13 +39,26 @@ public interface NeuralNetworkVisualizer {
         double hUnitOutput = (usedHeight)/(nOutputNodes+1);
         
         int neuronSize = 20;
+        String[] inputLabelStrings = null;
+        String[] outputLabelStrings = null;
+        if(inputLabels != null) {
+            inputLabelStrings = inputLabels.split(":");
+        }
+        if(outputLabels != null) {
+            outputLabelStrings = outputLabels.split(":");
+        }
         
         // actually starts drawing 
         for(int i = 1;i<amountOfLayersTotal+1;i++) {
             if(i == 1) {
                 // draws the InputNeurons
                 for(int j = 1;j<nInputNodes+1;j++) {
-                    drawNeuron(gc, border+i*wUnit, border+j*hUnitInput, neuronSize);
+                    if(inputLabelStrings!=null) {
+                        drawNeuronInput(gc, border+i*wUnit, border+j*hUnitInput, neuronSize,inputLabelStrings[j-1]);
+                    }else {
+                        drawNeuron(gc, border+i*wUnit, border+j*hUnitInput, neuronSize);
+                    }
+                    
                     for(int k = 1;k<nHiddenNodes+1;k++) {
                         gc.setStroke(weightMatrixHH[i-1].matrix[k-1][i-1]<0?redColor:greenColor);
                         gc.setLineWidth(Math.abs(weightMatrixHH[i-1].matrix[k-1][j-1])+0.1);
@@ -69,10 +88,26 @@ public interface NeuralNetworkVisualizer {
             }else {
                 // draws the OutputNeurons
                 for(int j = 1;j<nOutputNodes+1;j++) {
-                    drawNeuron(gc, border+i*wUnit, border+j*hUnitOutput, neuronSize);
+                    if(outputLabelStrings!=null) {
+                        drawNeuronOutput(gc, border+i*wUnit, border+j*hUnitOutput, neuronSize,outputLabelStrings[j-1]);
+                    }else {
+                        drawNeuron(gc, border+i*wUnit, border+j*hUnitInput, neuronSize);
+                    }
                 }
             }
         }
+    }
+    
+    private static void drawNeuronInput(GraphicsContext gc,double x, double y, double size, String label) {
+        drawNeuron(gc, x, y, size);
+        gc.setFont(labelFont);
+        gc.fillText(label, x-size*8, y+20/3);
+    }
+    
+    private static void drawNeuronOutput(GraphicsContext gc,double x, double y, double size, String label) {
+        drawNeuron(gc, x, y, size);
+        gc.setFont(labelFont);
+        gc.fillText(label, x+size, y+20/3);
     }
     
     private static void drawNeuron(GraphicsContext gc,double x, double y, double size) {

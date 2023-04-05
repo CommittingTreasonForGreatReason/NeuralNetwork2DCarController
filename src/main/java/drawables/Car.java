@@ -3,7 +3,6 @@ package drawables;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
-import NeuralNetCar.Vector2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -43,7 +42,7 @@ public class Car extends DrawableObject{
         desiredDirection = new Vector2(1, 1);
         desiredDirection.setMagnitude(10);
         hitBoxRectangle = new Rectangle(centerPoint.getX()-width/2,centerPoint.getY()-width/2,width,width);
-        neuralNetwork = new NeuralNetwork(7+5,8,4,2);
+        neuralNetwork = new NeuralNetwork(sensorVectors.length+3,8,4,2);
         updateSensorVectors();
         updateTrackSensorPoints();
     }
@@ -91,6 +90,7 @@ public class Car extends DrawableObject{
 
     @Override
     public void update(double secondsSinceLastFrame) {
+        steerCarNeuralNetwork();
         if(secondsSinceLastFrame<1 && !isCrashed) {
             move(secondsSinceLastFrame);
         }
@@ -99,12 +99,36 @@ public class Car extends DrawableObject{
         updateTrackSensorPoints();
     }
     
-    private void steerCar() {
+    private void steerCarNeuralNetwork() {
     	Matrix inputMatrix = new Matrix(neuralNetwork.getnInputNodes(), 1);
     	int i = 0;
 		for(;i<trackSensorPoints.length;i++) {
-			
+			Vector2 trackSensorPoint = trackSensorPoints[i];
+			inputMatrix.matrix[i][0] = trackSensorPoint!=null?getDistanceFromPoint(trackSensorPoints[i]):sensorRange;
 		}
+		inputMatrix.matrix[i][0] = desiredDirection.getAngle();
+        i++;
+        inputMatrix.matrix[i][0] = velocity.getAngle();
+        i++;
+        inputMatrix.matrix[i][0] = velocity.getMagnitude();
+        i++;
+        
+        Matrix outputMatrix = neuralNetwork.feedForward(inputMatrix);
+        
+        if(outputMatrix.matrix[0][0] > 0.5) {
+            acceleration = 60;
+        }else if(outputMatrix.matrix[1][0] > 0.5){
+            acceleration = -80;
+        }else {
+            acceleration = 0;
+        }
+        if(outputMatrix.matrix[2][0] > 0.5) {
+            rotationSpeed = -120;
+        }else if(outputMatrix.matrix[3][0] > 0.5) {
+            rotationSpeed = 120;
+        }else {
+            rotationSpeed = 0;
+        }
     }
     
     private void move(double secondsSinceLastFrame) {
@@ -179,6 +203,11 @@ public class Car extends DrawableObject{
         double gk = v2.getY() - centerPoint.getY();
         return ak*ak + gk*gk;
     }
+    public double getDistanceFromPoint(Vector2 v2) {
+        double ak = v2.getX() - centerPoint.getX();
+        double gk = v2.getY() - centerPoint.getY();
+        return Math.sqrt(ak*ak + gk*gk);
+    }
     
 
     @Override
@@ -194,7 +223,6 @@ public class Car extends DrawableObject{
             gc.fillText(fitness+"", 0, 0);
             
             gc.translate(-centerPoint.getX(), -centerPoint.getY());
-//            drawHitBox(gc);
             drawSensorVectors(gc);
             drawVectors(gc);
             drawTrackSensorPoints(gc);
@@ -224,7 +252,14 @@ public class Car extends DrawableObject{
     }
     
     public void drawNeuralNetwork(GraphicsContext gc) {
-        NeuralNetworkVisualizer.visualizeNeuralNetwork(gc, neuralNetwork, GUIController.getCanvasWidth(), GUIController.getCanvasHeight());
+        String inputLabels = "";
+        for(int i = 0;i<sensorVectors.length;i++) {
+            inputLabels += "sensor " + i + ":";
+        }
+        inputLabels+= "desired direction:direction:velocity";
+        
+        String outputLabels = "accelerate:decelerate:turn left:turn right";
+        NeuralNetworkVisualizer.visualizeNeuralNetwork(inputLabels,outputLabels,gc, neuralNetwork, GUIController.getCanvasWidth(), GUIController.getCanvasHeight());
     }
     
     public void drawCrashedCross(GraphicsContext gc) {
@@ -238,7 +273,7 @@ public class Car extends DrawableObject{
         gc.translate(-centerPoint.getX(), -centerPoint.getY());
     }
     
-    private void drawHitBox(GraphicsContext gc) {
+    public void drawHitBox(GraphicsContext gc) {
           gc.setStroke(Color.BLACK);
           gc.setLineWidth(3);
           gc.strokeRect(hitBoxRectangle.getX(), hitBoxRectangle.getY(), hitBoxRectangle.getWidth(), hitBoxRectangle.getHeight());
@@ -258,7 +293,7 @@ public class Car extends DrawableObject{
         
     }
     
-    public void keyPressed(KeyEvent e) {
+    public void steerCarKeyPressed(KeyEvent e) {
         if(e.getText().equals("w")) {
             acceleration = 60;
         }else if(e.getText().equals("s")) {
@@ -270,7 +305,7 @@ public class Car extends DrawableObject{
         }
     }
     
-    public void keyReleased(KeyEvent e) {
+    public void steerCarKeyReleased(KeyEvent e) {
         if(e.getText().equals("w")) {
             acceleration = 0;
         }else if(e.getText().equals("s")) {

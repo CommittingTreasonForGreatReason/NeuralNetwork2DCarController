@@ -48,7 +48,7 @@ public class InputEventHandler {
     
     public void keyPressed(KeyEvent e) {
         for(Car car : raceTrack.getCars()) {
-            car.keyPressed(e);
+            car.steerCarKeyPressed(e);
         }
         if(e.getText().equals("x")) {
             raceTrack.toggleGridLines();
@@ -65,6 +65,9 @@ public class InputEventHandler {
         if(e.getText().equals("f")) {
             raceTrack.toggleCameraFollowCar();
         }else
+        if(e.getText().equals("h")) {
+            raceTrack.toggleHitbox();
+        }else
         if(e.getCode() == KeyCode.SHIFT) {
             shiftDown = true;
         }
@@ -73,7 +76,7 @@ public class InputEventHandler {
     
     public void keyReleased(KeyEvent e) {
         for(Car car : raceTrack.getCars()) {
-            car.keyReleased(e);
+            car.steerCarKeyReleased(e);
         }
         if(e.getCode() == KeyCode.SHIFT) {
             shiftDown = false;

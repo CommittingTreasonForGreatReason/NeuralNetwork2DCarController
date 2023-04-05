@@ -28,7 +28,7 @@ public class RaceTrack extends DrawableObject{
     private ArrayList<Line2D> trackLines;
     private ArrayList<GoalLine> goalLines = new ArrayList<GoalLine>();
     private GoalLine editGoalLine = null;
-    private boolean showGoalLines = true, showNeuralNetwork = true;
+    private boolean showGoalLines = true, showNeuralNetwork = true, showHitbox = true;
     private boolean cameraFollowCar = false;
     private final int amountOfCars = 1;
 
@@ -83,6 +83,10 @@ public class RaceTrack extends DrawableObject{
     
     public void toggleNeuralNetwork() {
         showNeuralNetwork = !showNeuralNetwork;
+    }
+    
+    public void toggleHitbox() {
+        showHitbox = !showHitbox;
     }
     
     public void saveNeuralNetwork(String fileName) {
@@ -169,6 +173,13 @@ public class RaceTrack extends DrawableObject{
         for(Car car : cars) {
             if(!car.isCrashed()) {
                 car.draw(gc);
+            }
+        }
+        if(showHitbox) {
+            for(Car car : cars) {
+                if(!car.isCrashed()) {
+                    car.drawHitBox(gc);      
+                }
             }
         }
     }
