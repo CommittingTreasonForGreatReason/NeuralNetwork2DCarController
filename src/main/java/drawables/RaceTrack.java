@@ -100,7 +100,6 @@ public class RaceTrack extends DrawableObject{
         }else {
             System.err.println("couldn't save Neural Network please wait 1 generation");
         }
-        
     }
     
     public void loadNeuralNetwork(String fileName) {
@@ -167,7 +166,8 @@ public class RaceTrack extends DrawableObject{
     @Override
     public void update(double secondsSinceLastFrame) {
         if(cameraFollowCar) {
-            camera.follow((int)cars.get(0).getCenterX(), (int)cars.get(0).getCenterY());
+            Car bestCar = getBestCar();
+            camera.follow((int)bestCar.getCenterX(), (int)bestCar.getCenterY());
         }else {
             camera.move(); 
         }
@@ -287,9 +287,9 @@ public class RaceTrack extends DrawableObject{
     
     public void mouseClicked(final MouseEvent e, boolean isDrag, byte scrollIndex, boolean shiftDown) {
         if(scrollIndex == 2) {
-        	if(isDrag) {
-        		return;
-        	}
+            if(isDrag) {
+                return;
+            }
             if(e.getButton() == MouseButton.PRIMARY) {
                 tryEditGoalLine();
             }else if(e.getButton() == MouseButton.SECONDARY) {

@@ -61,7 +61,7 @@ public interface NeuralNetworkVisualizer {
                     
                     for(int k = 1;k<nHiddenNodes+1;k++) {
                         gc.setStroke(weightMatrixHH[i-1].matrix[k-1][i-1]<0?redColor:greenColor);
-                        gc.setLineWidth(Math.abs(weightMatrixHH[i-1].matrix[k-1][j-1])+0.1);
+                        gc.setLineWidth(3*Math.abs(weightMatrixHH[i-1].matrix[k-1][j-1])+0.1);
                         gc.strokeLine(border+(int)(i*wUnit), border+(int)(j*hUnitInput), border+(int)((i+1)*wUnit), border+(int)(k*hUnitHidden));
                     }
                 }
@@ -74,13 +74,13 @@ public interface NeuralNetworkVisualizer {
                     if(i < amountOfLayersTotal-1) {
                         for(int k = 1;k<nHiddenNodes+1;k++) {
                             gc.setStroke(weightMatrixHH[i-1].matrix[k-1][j-1]<0?redColor:greenColor);
-                            gc.setLineWidth(Math.abs(weightMatrixHH[i-1].matrix[k-1][j-1])+0.1);
+                            gc.setLineWidth(3*Math.abs(weightMatrixHH[i-1].matrix[k-1][j-1])+0.1);
                             gc.strokeLine((int)(border+i*wUnit), (int)(border+j*hUnitHidden), (int)(border+(i+1)*wUnit), (int)(border+k*hUnitHidden));
                         }
                     }else {
                         for(int k = 1;k<nOutputNodes+1;k++) {
                             gc.setStroke(weightMatrixHH[i-1].matrix[k-1][j-1]<0?redColor:greenColor);
-                            gc.setLineWidth(Math.abs(weightMatrixHH[i-1].matrix[k-1][j-1])+0.1);
+                            gc.setLineWidth(3*Math.abs(weightMatrixHH[i-1].matrix[k-1][j-1])+0.1);
                             gc.strokeLine((int)(border+i*wUnit), (int)(border+j*hUnitHidden), (int)(border+(i+1)*wUnit), (int)(border+k*hUnitOutput));
                         }
                     }
