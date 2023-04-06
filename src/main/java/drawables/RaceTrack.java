@@ -31,8 +31,9 @@ public class RaceTrack extends DrawableObject{
     private GoalLine editGoalLine = null;
     private boolean showGoalLines = true, showNeuralNetwork = true, showHitbox = false, showSensors = false;
     private boolean cameraFollowCar = false;
-    private final int amountOfCars = 100;
-    private double generationKillCounter = 0;
+    private static final int amountOfCars = 100;
+    private static final int generationKillCounterMax = 60;
+    private static double generationKillCounter = 0;
     private boolean firstUpdate = false;
 
     private RaceTrack(Color baseColor) {
@@ -132,6 +133,9 @@ public class RaceTrack extends DrawableObject{
     }
     
     public void startNewCarGeneration(Car bestCar) {
+        if(bestCar == null) {
+            bestCar = getBestCar();
+        }
     	generationKillCounter = 0;
         bestCarLastGen = bestCar;
         cars.clear();
@@ -173,6 +177,9 @@ public class RaceTrack extends DrawableObject{
     		firstUpdate = true;
     	}else {
     		generationKillCounter+=secondsSinceLastFrame;
+    		if(generationKillCounterMax<=generationKillCounter) {
+    		    startNewCarGeneration(bestCarLastGen);
+    		}
     	}
         if(cameraFollowCar) {
             Car bestCar = getBestCar();
