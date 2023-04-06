@@ -56,7 +56,7 @@ public class Car extends DrawableObject{
     
     public NeuralNetwork getMutatedNeuralNetworkCopy() {
         NeuralNetwork neuralNetworkCopy = neuralNetwork.getCopyNeuralNetwork();
-        neuralNetworkCopy.mutate(0.3);
+        neuralNetworkCopy.mutate(0.2);
         return neuralNetworkCopy;
     }
     

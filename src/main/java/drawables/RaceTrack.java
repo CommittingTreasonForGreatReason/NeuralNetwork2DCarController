@@ -31,7 +31,9 @@ public class RaceTrack extends DrawableObject{
     private GoalLine editGoalLine = null;
     private boolean showGoalLines = true, showNeuralNetwork = true, showHitbox = false, showSensors = false;
     private boolean cameraFollowCar = false;
-    private final int amountOfCars = 50;
+    private final int amountOfCars = 100;
+    private double generationKillCounter = 0;
+    private boolean firstUpdate = false;
 
     private RaceTrack(Color baseColor) {
         super(baseColor, new Vector2(GUIController.getCanvasWidth()/2, GUIController.getCanvasHeight()/2));
@@ -130,6 +132,7 @@ public class RaceTrack extends DrawableObject{
     }
     
     public void startNewCarGeneration(Car bestCar) {
+    	generationKillCounter = 0;
         bestCarLastGen = bestCar;
         cars.clear();
         spawnCars();
@@ -165,12 +168,19 @@ public class RaceTrack extends DrawableObject{
     
     @Override
     public void update(double secondsSinceLastFrame) {
+    	
+    	if(!firstUpdate) {
+    		firstUpdate = true;
+    	}else {
+    		generationKillCounter+=secondsSinceLastFrame;
+    	}
         if(cameraFollowCar) {
             Car bestCar = getBestCar();
             camera.follow((int)bestCar.getCenterX(), (int)bestCar.getCenterY());
         }else {
             camera.move(); 
         }
+        boolean allCarsCrashed = true;
         for(Car car : cars) {
             car.update(secondsSinceLastFrame);
             if(!car.isCrashed()) {
@@ -178,14 +188,19 @@ public class RaceTrack extends DrawableObject{
                 if(goalLines.size()>0) {
                     car.updateGoalLineScore(goalLines);
                 }
+                allCarsCrashed = false;
             }
         }
         minimap.update(secondsSinceLastFrame);
+        if(allCarsCrashed && bestCarLastGen!=null) {
+        	startNewCarGeneration(bestCarLastGen);
+        }
     }
 
     @Override
     public void draw(GraphicsContext gc) {
         gc.translate(-camera.getX(), -camera.getY());
+        
         grid.draw(gc);
         drawTrackLines(gc);
         drawGoalLines(gc);
@@ -194,6 +209,8 @@ public class RaceTrack extends DrawableObject{
         if(minimap.isShown()) {
             minimap.draw(gc);
         }
+        gc.setFill(Color.WHITE);
+        gc.fillText(generationKillCounter+"", getCenterX(), 50);
         if(showNeuralNetwork && bestCarLastGen!=null) {
             bestCarLastGen.drawNeuralNetwork(gc);
         }
