@@ -43,7 +43,8 @@ public class Camera {
     }
     
     public void follow(int x, int y) {
-        position = new Vector2(x, y);
+        Vector2 direction = Vector2.subtract(new Vector2(x, y), position);
+        position = Vector2.add(position, Vector2.getScaledVector(direction, 0.05));
     }
     
     public void move() {

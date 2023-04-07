@@ -47,7 +47,10 @@ public class GUIController {
     	final GameLoopTimer timer = new GameLoopTimer() {
             @Override
             public void tick(float secondsSinceLastFrame) {
-                renderer.update(secondsSinceLastFrame);
+                for(int i = 0;i<1;i++) {
+                    renderer.update(secondsSinceLastFrame);
+                }
+                
                 renderer.prepare();
                 renderer.render();
             }

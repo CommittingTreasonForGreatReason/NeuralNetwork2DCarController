@@ -11,10 +11,10 @@ public interface NeuralNetworkVisualizer {
     static final Font labelFont = new Font("Arial",20);   
     
     public static void visualizeNeuralNetwork(GraphicsContext gc, NeuralNetwork neuralNetwork, double w, double h) {
-        visualizeNeuralNetwork(null, null, gc, neuralNetwork, w, h);
+        visualizeNeuralNetwork("unnamed", null, null, gc, neuralNetwork, w, h);
     }
     
-    public static void visualizeNeuralNetwork(String inputLabels,String outputLabels,GraphicsContext gc, NeuralNetwork neuralNetwork, double w, double h) {
+    public static void visualizeNeuralNetwork(String name, String inputLabels,String outputLabels,GraphicsContext gc, NeuralNetwork neuralNetwork, double w, double h) {
         int nHiddenLayers = neuralNetwork.nHiddenLayers;
         int nInputNodes = neuralNetwork.nInputNodes;
         int nHiddenNodes = neuralNetwork.nHiddenNodes;
@@ -27,6 +27,8 @@ public interface NeuralNetworkVisualizer {
         gc.setLineWidth(8);
         
         gc.strokeRect(0, 0, w, h);
+        gc.setFill(Color.WHITE);
+        gc.fillText(name, w/2, h/10);
         int border = 50;
         int amountOfLayersTotal = nHiddenLayers+2;
         
@@ -65,6 +67,8 @@ public interface NeuralNetworkVisualizer {
                         gc.strokeLine(border+(int)(i*wUnit), border+(int)(j*hUnitInput), border+(int)((i+1)*wUnit), border+(int)(k*hUnitHidden));
                     }
                 }
+                gc.setFill(Color.WHITE);
+                gc.fillText(nInputNodes+"", border+wUnit-10, border+hUnitInput*(nInputNodes+1));
                 
                 
             }else if(i < amountOfLayersTotal){
@@ -85,6 +89,8 @@ public interface NeuralNetworkVisualizer {
                         }
                     }
                 }
+                gc.setFill(Color.WHITE);
+                gc.fillText(nHiddenNodes+"", border+wUnit*i-10, border+hUnitHidden*(nHiddenNodes+1));
             }else {
                 // draws the OutputNeurons
                 for(int j = 1;j<nOutputNodes+1;j++) {
@@ -94,6 +100,8 @@ public interface NeuralNetworkVisualizer {
                         drawNeuron(gc, border+i*wUnit, border+j*hUnitInput, neuronSize);
                     }
                 }
+                gc.setFill(Color.WHITE);
+                gc.fillText(nOutputNodes+"", border+wUnit*i-10, border+hUnitOutput*(nOutputNodes+1));
             }
         }
     }

@@ -46,6 +46,7 @@ public class RaceTrack extends DrawableObject{
         camera = Camera.getCameraInstance(getCenterX(),getCenterY());
         initTrackLines();
         initMinimap();
+        Car.setSensorRange(GridCell.getSize()*25);
     }
     
     public static RaceTrack getRaceTrackInstance() {
@@ -106,6 +107,7 @@ public class RaceTrack extends DrawableObject{
     }
     
     public void loadNeuralNetwork(String fileName) {
+        Car.setNameOfNeuralNetwork(fileName);
         cars.get(0).loadNeuralNetwork(fileName);
         startNewCarGeneration(cars.get(0));
     }

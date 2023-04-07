@@ -29,11 +29,12 @@ public class Car extends DrawableObject{
     
     private boolean isCrashed = false;
     private double fitness = 0;
+    private static String nameOfNeuralNetwork = "unnamed";
     private NeuralNetwork neuralNetwork;
     // Sensors
-    private static double sensorRange = 500;
-    Vector2[] sensorVectors = new Vector2[7];
-    Vector2[] trackSensorPoints = new Vector2[7];   
+    private static double sensorRange;
+    Vector2[] sensorVectors = new Vector2[9];
+    Vector2[] trackSensorPoints = new Vector2[9];   
     
     public Car(Vector2 centerPoint) {
         super(Constants.CAR_COLOR, centerPoint);
@@ -46,6 +47,14 @@ public class Car extends DrawableObject{
         updateTrackSensorPoints();
     }
     
+    public static void setSensorRange(double sensorRange) {
+        Car.sensorRange = sensorRange;
+    }
+    
+    public static void setNameOfNeuralNetwork(String nameOfNeuralNetwork) {
+        Car.nameOfNeuralNetwork = nameOfNeuralNetwork;
+    }
+    
     public double getFitness() {
         return fitness;
     }
@@ -56,7 +65,7 @@ public class Car extends DrawableObject{
     
     public NeuralNetwork getMutatedNeuralNetworkCopy() {
         NeuralNetwork neuralNetworkCopy = neuralNetwork.getCopyNeuralNetwork();
-        neuralNetworkCopy.mutate(0.2);
+        neuralNetworkCopy.mutate(0.3);
         return neuralNetworkCopy;
     }
     
@@ -65,9 +74,9 @@ public class Car extends DrawableObject{
     }
     
     private void updateSensorVectors() {
-        int amountOfSensors = 7;
-        int range = 120;
-        int angleStep = 120 / (amountOfSensors-1);
+        int amountOfSensors = 9;
+        int range = 180;
+        int angleStep = range / (amountOfSensors-1);
         for(int i = 0;i<amountOfSensors;i++) {
             sensorVectors[i] = new Vector2(0, 0);
             sensorVectors[i].setAngle(angleStep*i-range/2+desiredDirection.getAngle());
@@ -120,7 +129,7 @@ public class Car extends DrawableObject{
     	int i = 0;
 		for(;i<trackSensorPoints.length;i++) {
 			Vector2 trackSensorPoint = trackSensorPoints[i];
-			inputMatrix.matrix[i][0] = trackSensorPoint!=null?getDistanceFromPoint(trackSensorPoints[i]):sensorRange;
+			inputMatrix.matrix[i][0] = (trackSensorPoint!=null?getDistanceFromPoint(trackSensorPoints[i]):sensorRange)/GridCell.getSize();
 		}
 		inputMatrix.matrix[i][0] = desiredDirection.getAngle();
         i++;
@@ -265,7 +274,7 @@ public class Car extends DrawableObject{
         inputLabels+= "desired direction:direction:velocity";
         
         String outputLabels = "accelerate:decelerate:turn left:turn right";
-        NeuralNetworkVisualizer.visualizeNeuralNetwork(inputLabels,outputLabels,gc, neuralNetwork, GUIController.getCanvasWidth(), GUIController.getCanvasHeight());
+        NeuralNetworkVisualizer.visualizeNeuralNetwork(nameOfNeuralNetwork,inputLabels,outputLabels,gc, neuralNetwork, GUIController.getCanvasWidth(), GUIController.getCanvasHeight());
     }
     
     public void drawCrashedCross(GraphicsContext gc) {

@@ -56,7 +56,7 @@ public final class Renderer {
     // prepares next frame to be drawn
     public void prepare() {
         // clear entire canvas and fill it with background color
-        gc.setFill(Color.MAGENTA);
+        gc.setFill(Constants.WALL_COLOR);
         gc.fillRect(0, 0, resizeableCanvas.getWidth(), resizeableCanvas.getHeight());
 //        gc.setStroke(Color.RED);
 //        gc.strokeLine(0, 0, resizeableCanvas.getWidth(), resizeableCanvas.getHeight());
