@@ -69,7 +69,7 @@ public class Minimap extends DrawableObject {
         }
         gc.setFill(Color.RED);
         for(Vector2 carIndicators : carIndicators) {
-            gc.fillOval(carIndicators.getX(), carIndicators.getY(), 5, 5);
+            gc.fillOval(carIndicators.getX()-2.5, carIndicators.getY()-2.5, 5, 5);
         }
         gc.setLineWidth(1);
         gc.setStroke(Color.RED);

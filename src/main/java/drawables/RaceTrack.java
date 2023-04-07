@@ -31,7 +31,7 @@ public class RaceTrack extends DrawableObject{
     private GoalLine editGoalLine = null;
     private boolean showGoalLines = true, showNeuralNetwork = true, showHitbox = false, showSensors = false;
     private boolean cameraFollowCar = false;
-    private static final int amountOfCars = 100;
+    private static final int amountOfCars = 300;
     private static final int generationKillCounterMax = 60;
     private static double generationKillCounter = 0;
     private boolean firstUpdate = false;
