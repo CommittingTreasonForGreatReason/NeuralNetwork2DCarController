@@ -62,6 +62,9 @@ public class InputEventHandler {
         if(e.getText().equals("n")) {
             raceTrack.toggleNeuralNetwork();     
         }else
+        if(e.getText().equals("l")) {
+            raceTrack.toggleGenerationLogger(); 
+        }else
         if(e.getText().equals("f")) {
             raceTrack.toggleCameraFollowCar();
         }else
@@ -72,7 +75,7 @@ public class InputEventHandler {
             raceTrack.toggleSensors();
         }else
         if(e.getText().equals("k")) {
-            raceTrack.startNewCarGeneration(raceTrack.getBestCar());
+            raceTrack.startNewCarGeneration(true);
         }else
         if(e.getCode() == KeyCode.SHIFT) {
             shiftDown = true;

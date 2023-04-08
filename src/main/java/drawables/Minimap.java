@@ -13,9 +13,12 @@ public class Minimap extends DrawableObject {
     private RaceTrack racetrack;
     private boolean isShown = true;
     private ArrayList<Vector2> carIndicators = new ArrayList<Vector2>();
+    private ArrayList<Boolean> carCrashed = new ArrayList<Boolean>();
     private double cellSize,width,height;
     
     public static final double scaleFactor = 0.2;
+    public static final Color carIndicatorColor = Color.GREEN;
+    public static final Color carIndicatorCrashedColor = Color.RED;
 
     public Minimap(Color baseColor, Vector2 centerPoint, RaceTrack racetrack) {
         super(baseColor, centerPoint);
@@ -37,10 +40,12 @@ public class Minimap extends DrawableObject {
     public void update(double secondsSinceLastFrame) {
         ArrayList<Car> cars = racetrack.getCars();
         carIndicators.clear();
+        carCrashed.clear();
         for(Car car : cars) {
             double x = (car.getCenterX()-RaceTrack.getRaceTrackInstance().getCenterX())/GridCell.getSize()*cellSize + getCenterX();
             double y = (car.getCenterY()-RaceTrack.getRaceTrackInstance().getCenterY())/GridCell.getSize()*cellSize + getCenterY();
             carIndicators.add(new Vector2(x, y));
+            carCrashed.add(car.isCrashed());
         }
     }
     
@@ -67,9 +72,11 @@ public class Minimap extends DrawableObject {
                 gc.fillRect(x, y, cellSize+1, cellSize+1);
             }
         }
-        gc.setFill(Color.RED);
-        for(Vector2 carIndicators : carIndicators) {
-            gc.fillOval(carIndicators.getX()-2.5, carIndicators.getY()-2.5, 5, 5);
+        
+        for(int i = 0;i<carIndicators.size();i++) {
+            Vector2 carIndicator = carIndicators.get(i);
+            gc.setFill(carCrashed.get(i)?carIndicatorCrashedColor:carIndicatorColor);
+            gc.fillOval(carIndicator.getX()-2.5, carIndicator.getY()-2.5, 5, 5);
         }
         gc.setLineWidth(1);
         gc.setStroke(Color.RED);

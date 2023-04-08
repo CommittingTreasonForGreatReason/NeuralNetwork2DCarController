@@ -33,8 +33,8 @@ public class Car extends DrawableObject{
     private NeuralNetwork neuralNetwork;
     // Sensors
     private static double sensorRange;
-    Vector2[] sensorVectors = new Vector2[9];
-    Vector2[] trackSensorPoints = new Vector2[9];   
+    Vector2[] sensorVectors = new Vector2[7];
+    Vector2[] trackSensorPoints = new Vector2[7];   
     
     public Car(Vector2 centerPoint) {
         super(Constants.CAR_COLOR, centerPoint);
@@ -45,6 +45,10 @@ public class Car extends DrawableObject{
         neuralNetwork = new NeuralNetwork(sensorVectors.length+3,8,4,2);
         updateSensorVectors();
         updateTrackSensorPoints();
+    }
+    
+    public static String getNameOfNeuralNetwork() {
+        return nameOfNeuralNetwork;
     }
     
     public static void setSensorRange(double sensorRange) {
@@ -65,7 +69,7 @@ public class Car extends DrawableObject{
     
     public NeuralNetwork getMutatedNeuralNetworkCopy() {
         NeuralNetwork neuralNetworkCopy = neuralNetwork.getCopyNeuralNetwork();
-        neuralNetworkCopy.mutate(0.3);
+        neuralNetworkCopy.mutate(0.5);
         return neuralNetworkCopy;
     }
     
@@ -74,7 +78,7 @@ public class Car extends DrawableObject{
     }
     
     private void updateSensorVectors() {
-        int amountOfSensors = 9;
+        int amountOfSensors = sensorVectors.length;
         int range = 180;
         int angleStep = range / (amountOfSensors-1);
         for(int i = 0;i<amountOfSensors;i++) {
@@ -92,7 +96,7 @@ public class Car extends DrawableObject{
     }
     
     public void saveNeuralNetwork(String fileName) {
-    	NeuralNetworkFileManager.saveNeuralNetworkAsFile(neuralNetwork, fileName, 10);
+    	NeuralNetworkFileManager.saveNeuralNetworkAsFile(neuralNetwork, fileName);
     }
     
     public void loadNeuralNetwork(String fileName) {
@@ -157,17 +161,18 @@ public class Car extends DrawableObject{
     }
     
     private void move(double secondsSinceLastFrame) {
-        centerPoint = Vector2.add(centerPoint, Vector2.getScaledVector(velocity, secondsSinceLastFrame));
+        double normalizer = GridCell.getSize()/25.0;
+        centerPoint = Vector2.add(centerPoint, Vector2.getScaledVector(velocity, secondsSinceLastFrame*normalizer));
         desiredDirection.setAngle(desiredDirection.getAngle()+rotationSpeed*secondsSinceLastFrame);
         
-        double speed = velocity.getMagnitude() + (acceleration+deceleration)*secondsSinceLastFrame;
+        double speed = velocity.getMagnitude() + (acceleration+deceleration)*secondsSinceLastFrame * normalizer;
         if(speed < 0) {
             speed = 0;
         }
-        velocity = Vector2.add(velocity, Vector2.getScaledVector(desiredDirection, 2));
+        velocity = Vector2.add(velocity, Vector2.getScaledVector(desiredDirection, 2*normalizer));
         velocity.setMagnitude(speed);
-        if(velocity.getMagnitude() > maxVelocity) {
-            velocity.setMagnitude(maxVelocity);
+        if(velocity.getMagnitude() > maxVelocity*normalizer) {
+            velocity.setMagnitude(maxVelocity*normalizer);
         }
     }
     
@@ -182,9 +187,12 @@ public class Car extends DrawableObject{
     }
     
     public void updateGoalLineScore(ArrayList<GoalLine> goalLines) {
+        fitness = (int)fitness; 
         if(goalLines.get(((int)fitness) % goalLines.size()).getLine().intersects(hitBoxRectangle.getX(),hitBoxRectangle.getY(),hitBoxRectangle.getWidth(),hitBoxRectangle.getHeight())) {
             fitness++;
         }
+        double bonusFitness = 100/getDistanceFromPoint(goalLines.get(((int)fitness)%goalLines.size()).getCenterPoint())/GridCell.getSize();
+        fitness += bonusFitness;
     }
     
     public Vector2 getPointClosestTrackIntersection(Vector2 v2) {
@@ -244,7 +252,7 @@ public class Car extends DrawableObject{
             
             gc.setFont(new Font(20));
             gc.setFill(Color.RED);
-            gc.fillText(fitness+"", 0, 0);
+            gc.fillText(Math.round(fitness*1000)/1000.0 + "", 0, 0);
             
             gc.translate(-centerPoint.getX(), -centerPoint.getY());
     }

@@ -6,6 +6,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import neuralNetwork.NeuralNetworkGenerationLogger;
+import neuralNetwork.NeuralNetworkVisualizer;
 import vectors.Vector2;
 
 import java.awt.geom.Line2D;
@@ -29,9 +31,9 @@ public class RaceTrack extends DrawableObject{
     private ArrayList<Line2D> trackLines;
     private ArrayList<GoalLine> goalLines = new ArrayList<GoalLine>();
     private GoalLine editGoalLine = null;
-    private boolean showGoalLines = true, showNeuralNetwork = true, showHitbox = false, showSensors = false;
+    private boolean showGoalLines = true, showNeuralNetwork = false, showGenerationLogger = false, showHitbox = false, showSensors = false;
     private boolean cameraFollowCar = false;
-    private static final int amountOfCars = 300;
+    private static final int amountOfCars = 500;
     private static final int generationKillCounterMax = 60;
     private static double generationKillCounter = 0;
     private boolean firstUpdate = false;
@@ -90,6 +92,10 @@ public class RaceTrack extends DrawableObject{
         showNeuralNetwork = !showNeuralNetwork;
     }
     
+    public void toggleGenerationLogger() {
+        showGenerationLogger = !showGenerationLogger;
+    }
+    
     public void toggleHitbox() {
         showHitbox = !showHitbox;
     }
@@ -101,6 +107,7 @@ public class RaceTrack extends DrawableObject{
     public void saveNeuralNetwork(String fileName) {
         if(bestCarLastGen != null) {
             bestCarLastGen.saveNeuralNetwork(fileName);
+            NeuralNetworkGenerationLogger.saveGenerationLogAsFile(fileName, 3);
         }else {
             System.err.println("couldn't save Neural Network please wait 1 generation");
         }
@@ -109,7 +116,8 @@ public class RaceTrack extends DrawableObject{
     public void loadNeuralNetwork(String fileName) {
         Car.setNameOfNeuralNetwork(fileName);
         cars.get(0).loadNeuralNetwork(fileName);
-        startNewCarGeneration(cars.get(0));
+        NeuralNetworkGenerationLogger.loadGenerationLog(fileName);
+        startNewCarGeneration(false);
     }
     
     public void initMinimap() {
@@ -134,12 +142,12 @@ public class RaceTrack extends DrawableObject{
         }
     }
     
-    public void startNewCarGeneration(Car bestCar) {
-        if(bestCar == null) {
-            bestCar = getBestCar();
-        }
+    public void startNewCarGeneration(boolean log) {
     	generationKillCounter = 0;
-        bestCarLastGen = bestCar;
+        bestCarLastGen = getBestCar();
+        if(log) {
+            NeuralNetworkGenerationLogger.addFitnessValue(bestCarLastGen.getFitness());
+        }
         cars.clear();
         spawnCars();
         cars.get(0).setNeuralNetwork(bestCarLastGen.getNeuralNetworkCopy());;
@@ -180,7 +188,7 @@ public class RaceTrack extends DrawableObject{
     	}else {
     		generationKillCounter+=secondsSinceLastFrame;
     		if(generationKillCounterMax<=generationKillCounter) {
-    		    startNewCarGeneration(bestCarLastGen);
+    		    startNewCarGeneration(true);
     		}
     	}
         if(cameraFollowCar) {
@@ -201,8 +209,8 @@ public class RaceTrack extends DrawableObject{
             }
         }
         minimap.update(secondsSinceLastFrame);
-        if(allCarsCrashed && bestCarLastGen!=null) {
-        	startNewCarGeneration(bestCarLastGen);
+        if(allCarsCrashed) {
+        	startNewCarGeneration(true);
         }
     }
 
@@ -222,6 +230,9 @@ public class RaceTrack extends DrawableObject{
         gc.fillText(generationKillCounter+"", getCenterX(), 50);
         if(showNeuralNetwork && bestCarLastGen!=null) {
             bestCarLastGen.drawNeuralNetwork(gc);
+        }
+        if(showGenerationLogger) {
+            NeuralNetworkVisualizer.visualizeGenerationLog(Car.getNameOfNeuralNetwork(), NeuralNetworkGenerationLogger.getFitnessValues(), gc, GUIController.getCanvasWidth(), GUIController.getCanvasHeight());
         }
     }
     

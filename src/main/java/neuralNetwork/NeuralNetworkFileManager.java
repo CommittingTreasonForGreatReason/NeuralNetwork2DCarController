@@ -9,7 +9,7 @@ public interface NeuralNetworkFileManager {
 	
 	static final String directory = "src/main/resources/neuralNetworks/";
 	
-	public static void saveNeuralNetworkAsFile(NeuralNetwork neuralNetwork, String fileName, int amountOfDecimalPoints) {
+	public static void saveNeuralNetworkAsFile(NeuralNetwork neuralNetwork, String fileName) {
 	    System.out.println("saving neural network...");
 		try {
 			File neuralNetworkTextFile = new File(directory+fileName+".txt");
@@ -21,10 +21,6 @@ public interface NeuralNetworkFileManager {
 			int nHiddenNodes = neuralNetwork.nHiddenNodes;
 			int nOutputNodes = neuralNetwork.nOutputNodes;
 			int nHiddenLayers = neuralNetwork.nHiddenLayers;
-			float roundValue = 1;
-			for(int i = 0;i<amountOfDecimalPoints;i++) {
-				roundValue *= 10;
-			}
 			pw.println("InputNodes: "+nInputNodes+" HiddenNodes: "+nHiddenNodes+
 					" OutputNodes: "+nOutputNodes+" HiddenLayers: "+nHiddenLayers);
 			//--------------------------------------weights--------------------------------------//
@@ -33,7 +29,7 @@ public interface NeuralNetworkFileManager {
 			pw.println("__________________________Format [Hidden * Input]:["+nHiddenNodes + " * " + nInputNodes+"]__________________________");
 			for(int i = 0;i<nHiddenNodes;i++) {
 				for(int j = 0;j<nInputNodes;j++) {
-					pw.print(Math.round(neuralNetwork.weightMatrixHH[0].matrix[i][j]*roundValue)/roundValue+" ");
+					pw.print(neuralNetwork.weightMatrixHH[0].matrix[i][j]+" ");
 				}
 				pw.println();
 			}
@@ -43,7 +39,7 @@ public interface NeuralNetworkFileManager {
 					 pw.println("__________________________Format [Hidden * Hidden]:["+nHiddenNodes + " * " + nHiddenNodes+"]__________________________");
 					 for(int i = 0;i<nHiddenNodes;i++) {
 						for(int j = 0;j<nHiddenNodes;j++) {
-							pw.print(Math.round(neuralNetwork.weightMatrixHH[k].matrix[i][j]*roundValue)/roundValue+" ");	
+							pw.print(neuralNetwork.weightMatrixHH[k].matrix[i][j]+" ");	
 						}
 						pw.println();
 					 }
@@ -53,7 +49,7 @@ public interface NeuralNetworkFileManager {
 			pw.println("__________________________Format [Output * Hidden]:["+nOutputNodes + " * " + nHiddenNodes+"]__________________________");
 			for(int i = 0;i<nOutputNodes;i++) {
 				for(int j = 0;j<nHiddenNodes;j++) {
-					pw.print(Math.round(neuralNetwork.weightMatrixHH[nHiddenLayers].matrix[i][j]*roundValue)/roundValue+" ");
+					pw.print(neuralNetwork.weightMatrixHH[nHiddenLayers].matrix[i][j]+" ");
 				}
 				pw.println();
 			}
@@ -62,7 +58,7 @@ public interface NeuralNetworkFileManager {
 			// Hidden * Input
 			pw.println("__________________________Format [Hidden * 1]:["+nHiddenNodes + " * " + 1+"]__________________________");
 				for(int i = 0;i<nHiddenNodes;i++) {
-					pw.print(Math.round(neuralNetwork.biasMatrixHH[0].matrix[i][0]*roundValue)/roundValue+" ");
+					pw.print(neuralNetwork.biasMatrixHH[0].matrix[i][0]+" ");
 					pw.println();
 				}
 			// Hidden * Hidden
@@ -70,7 +66,7 @@ public interface NeuralNetworkFileManager {
 				for(int k = 1;k<nHiddenLayers;k++) {
 					pw.println("__________________________Format [Hidden * 1]:["+nHiddenNodes + " * " + 1+"]__________________________");
 					for(int i = 0;i<nHiddenNodes;i++) {
-						pw.print(Math.round(neuralNetwork.biasMatrixHH[k].matrix[i][0]*roundValue)/roundValue+" ");	
+						pw.print(neuralNetwork.biasMatrixHH[k].matrix[i][0]+" ");	
 						pw.println();
 					}
 				}
@@ -78,7 +74,7 @@ public interface NeuralNetworkFileManager {
 			// Output * Hidden
 			pw.println("__________________________Format [Output * 1]:["+nOutputNodes + " * " + 1+"]__________________________");
 			for(int i = 0;i<nOutputNodes;i++) {
-				pw.print(Math.round(neuralNetwork.biasMatrixHH[nHiddenLayers].matrix[i][0]*roundValue)/roundValue+" ");
+				pw.print(neuralNetwork.biasMatrixHH[nHiddenLayers].matrix[i][0]+" ");
 				if(i<nOutputNodes-1) {
 					pw.println();
 				}

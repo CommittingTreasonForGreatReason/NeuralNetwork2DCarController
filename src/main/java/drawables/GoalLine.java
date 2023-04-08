@@ -6,6 +6,7 @@ import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import vectors.Vector2;
 
 public class GoalLine {
     private int row1,column1,row2,column2;
@@ -33,6 +34,11 @@ public class GoalLine {
     
     public Line2D getLine() {
         return line;
+    }
+    
+    public Vector2 getCenterPoint() {
+        java.awt.Rectangle boundsRectangle = line.getBounds();
+        return new Vector2(boundsRectangle.getCenterX(),boundsRectangle.getCenterY());
     }
     
     public void setRowsAndColumns(int row1,int column1,int row2,int column2) {

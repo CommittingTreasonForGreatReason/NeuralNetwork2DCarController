@@ -1,7 +1,13 @@
 package neuralNetwork;
 
+import java.util.ArrayList;
+
+import javax.imageio.event.IIOReadWarningListener;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Polyline;
 import javafx.scene.text.Font;
 
 public interface NeuralNetworkVisualizer {
@@ -9,6 +15,16 @@ public interface NeuralNetworkVisualizer {
     static final Color redColor = Color.RED;
     static final Color greenColor = Color.GREEN;    
     static final Font labelFont = new Font("Arial",20);   
+    
+    private static void drawBackGround(GraphicsContext gc,double w, double h) {
+        gc.setFill(new Color(0.1, 0.1, 0.1, 0.95));
+        gc.fillRect(0, 0, w, h);
+        gc.setStroke(Color.ORANGERED);
+        gc.setLineWidth(8);
+        
+        gc.strokeRect(0, 0, w, h);
+        gc.setFill(Color.WHITE);
+    }
     
     public static void visualizeNeuralNetwork(GraphicsContext gc, NeuralNetwork neuralNetwork, double w, double h) {
         visualizeNeuralNetwork("unnamed", null, null, gc, neuralNetwork, w, h);
@@ -21,13 +37,7 @@ public interface NeuralNetworkVisualizer {
         int nOutputNodes = neuralNetwork.nOutputNodes;
         Matrix[] weightMatrixHH = neuralNetwork.weightMatrixHH;
         
-        gc.setFill(new Color(0.1, 0.1, 0.1, 0.95));
-        gc.fillRect(0, 0, w, h);
-        gc.setStroke(Color.ORANGERED);
-        gc.setLineWidth(8);
-        
-        gc.strokeRect(0, 0, w, h);
-        gc.setFill(Color.WHITE);
+        drawBackGround(gc, w, h);
         gc.fillText(name, w/2, h/10);
         int border = 50;
         int amountOfLayersTotal = nHiddenLayers+2;
@@ -121,5 +131,52 @@ public interface NeuralNetworkVisualizer {
     private static void drawNeuron(GraphicsContext gc,double x, double y, double size) {
         gc.setFill(Color.WHITE);
         gc.fillOval(x-size/2, y-size/2, size, size);
+    }
+    
+    public static void visualizeGenerationLog(String name,ArrayList<Double> fitnessValues,GraphicsContext gc,double w, double h) {
+        drawBackGround(gc, w, h);
+        gc.fillText(name, w/2, h/10);
+        
+        int border = 100;
+        double usedWidth = (w-border*2);
+        double usedHeight = (h-border*2);
+        
+        int amountOfValues = fitnessValues.size();
+        double wUnit = usedWidth/amountOfValues;
+        double maxValue = 200;
+        
+        int amountOfYTicks = 10;
+        double hYTick = usedHeight/amountOfYTicks;
+        gc.setLineWidth(4);
+        gc.setStroke(Color.WHITE);
+        // stroke x-Axis
+        gc.strokeLine(border, usedHeight+border, usedWidth+border, usedHeight+border);
+        // stroke y-Axis
+        gc.strokeLine(border, usedHeight+border, border, border);
+        
+        // stroke y-ticks
+        gc.setLineWidth(2);
+        gc.setFont(labelFont);
+        gc.setFill(Color.WHITE);
+        for(int i=0;i<amountOfYTicks+1;i++) {
+            gc.strokeLine(border-10, hYTick*i+border, border+10, hYTick*i+border);
+            gc.fillText(Math.round(maxValue-(hYTick*i)/usedHeight*maxValue)+"", border-60, hYTick*i+border+20/3);
+        }
+        gc.strokeLine(usedWidth+border, border+usedHeight-10, usedWidth+border, border+usedHeight+10);
+        gc.fillText(amountOfValues+"", usedWidth+border, border+usedHeight+20);
+        
+        
+        
+        
+        double[] xPoints = new double[amountOfValues+1];
+        double[] yPoints = new double[amountOfValues+1];
+        xPoints[0]=border;
+        yPoints[0]=border+usedHeight;
+        for(int i=0;i<amountOfValues;i++) {
+            xPoints[i+1] = border+wUnit*(i+1);
+            yPoints[i+1] = border+usedHeight-fitnessValues.get(i)/maxValue*usedHeight;
+        }
+        gc.setStroke(Color.ORANGERED);
+        gc.strokePolyline(xPoints, yPoints, amountOfValues+1);
     }
 }
