@@ -116,6 +116,7 @@ public class RaceTrack extends DrawableObject{
     public void loadNeuralNetwork(String fileName) {
         Car.setNameOfNeuralNetwork(fileName);
         cars.get(0).loadNeuralNetwork(fileName);
+        bestCarLastGen = cars.get(0);
         NeuralNetworkGenerationLogger.loadGenerationLog(fileName);
         startNewCarGeneration(false);
     }
@@ -144,8 +145,8 @@ public class RaceTrack extends DrawableObject{
     
     public void startNewCarGeneration(boolean log) {
     	generationKillCounter = 0;
-        bestCarLastGen = getBestCar();
         if(log) {
+            bestCarLastGen = getBestCar();
             NeuralNetworkGenerationLogger.addFitnessValue(bestCarLastGen.getFitness());
         }
         cars.clear();
@@ -199,7 +200,6 @@ public class RaceTrack extends DrawableObject{
         }
         boolean allCarsCrashed = true;
         for(Car car : cars) {
-            car.update(secondsSinceLastFrame);
             if(!car.isCrashed()) {
                 car.updateCrashed(trackLines);
                 if(goalLines.size()>0) {
@@ -207,6 +207,7 @@ public class RaceTrack extends DrawableObject{
                 }
                 allCarsCrashed = false;
             }
+            car.update(secondsSinceLastFrame);
         }
         minimap.update(secondsSinceLastFrame);
         if(allCarsCrashed) {

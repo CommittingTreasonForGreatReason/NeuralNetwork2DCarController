@@ -7,7 +7,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import neuralNetwork.Matrix;
 import neuralNetwork.NeuralNetwork;
 import neuralNetwork.NeuralNetworkFileManager;
@@ -35,14 +34,15 @@ public class Car extends DrawableObject{
     private static double sensorRange;
     Vector2[] sensorVectors = new Vector2[7];
     Vector2[] trackSensorPoints = new Vector2[7];   
+    GoalLine nextGoalLine = null;
     
     public Car(Vector2 centerPoint) {
         super(Constants.CAR_COLOR, centerPoint);
         velocity = new Vector2(1, 1);
         desiredDirection = new Vector2(1, 1);
-        desiredDirection.setMagnitude(10);
+        desiredDirection.setMagnitude(1);
         hitBoxRectangle = new Rectangle(centerPoint.getX()-width/2,centerPoint.getY()-width/2,width,width);
-        neuralNetwork = new NeuralNetwork(sensorVectors.length+3,8,4,2);
+        neuralNetwork = new NeuralNetwork(sensorVectors.length+4,8,4,2);
         updateSensorVectors();
         updateTrackSensorPoints();
     }
@@ -69,7 +69,7 @@ public class Car extends DrawableObject{
     
     public NeuralNetwork getMutatedNeuralNetworkCopy() {
         NeuralNetwork neuralNetworkCopy = neuralNetwork.getCopyNeuralNetwork();
-        neuralNetworkCopy.mutate(0.5);
+        neuralNetworkCopy.mutate(0.3);
         return neuralNetworkCopy;
     }
     
@@ -137,9 +137,11 @@ public class Car extends DrawableObject{
 		}
 		inputMatrix.matrix[i][0] = desiredDirection.getAngle();
         i++;
-        inputMatrix.matrix[i][0] = velocity.getAngle();
+        inputMatrix.matrix[i][0] = velocity.getAngleInDegrees();
         i++;
         inputMatrix.matrix[i][0] = velocity.getMagnitude();
+        i++;
+        inputMatrix.matrix[i][0] = getNextGoalLineDirectionAngle();
         i++;
         
         Matrix outputMatrix = neuralNetwork.feedForward(inputMatrix);
@@ -161,7 +163,7 @@ public class Car extends DrawableObject{
     }
     
     private void move(double secondsSinceLastFrame) {
-        double normalizer = GridCell.getSize()/25.0;
+        double normalizer = GridCell.getSize()/20.0;
         centerPoint = Vector2.add(centerPoint, Vector2.getScaledVector(velocity, secondsSinceLastFrame*normalizer));
         desiredDirection.setAngle(desiredDirection.getAngle()+rotationSpeed*secondsSinceLastFrame);
         
@@ -169,7 +171,7 @@ public class Car extends DrawableObject{
         if(speed < 0) {
             speed = 0;
         }
-        velocity = Vector2.add(velocity, Vector2.getScaledVector(desiredDirection, 2*normalizer));
+        velocity = Vector2.add(velocity, Vector2.getScaledVector(desiredDirection, 2*normalizer*secondsSinceLastFrame*1000));
         velocity.setMagnitude(speed);
         if(velocity.getMagnitude() > maxVelocity*normalizer) {
             velocity.setMagnitude(maxVelocity*normalizer);
@@ -188,7 +190,8 @@ public class Car extends DrawableObject{
     
     public void updateGoalLineScore(ArrayList<GoalLine> goalLines) {
         fitness = (int)fitness; 
-        if(goalLines.get(((int)fitness) % goalLines.size()).getLine().intersects(hitBoxRectangle.getX(),hitBoxRectangle.getY(),hitBoxRectangle.getWidth(),hitBoxRectangle.getHeight())) {
+        nextGoalLine = goalLines.get(((int)fitness) % goalLines.size());
+        if(nextGoalLine.getLine().intersects(hitBoxRectangle.getX(),hitBoxRectangle.getY(),hitBoxRectangle.getWidth(),hitBoxRectangle.getHeight())) {
             fitness++;
         }
         double bonusFitness = 100/getDistanceFromPoint(goalLines.get(((int)fitness)%goalLines.size()).getCenterPoint())/GridCell.getSize();
@@ -241,6 +244,13 @@ public class Car extends DrawableObject{
         return Math.sqrt(ak*ak + gk*gk);
     }
     
+    private double getNextGoalLineDirectionAngle() {
+        double x = nextGoalLine.getLine().getBounds().getCenterX();
+        double y = nextGoalLine.getLine().getBounds().getCenterY();
+        return Vector2.subtract(new Vector2(x, y), centerPoint).getAngleInDegrees();
+    }
+    
+    
 
     @Override
     public void draw(GraphicsContext gc) {
@@ -250,9 +260,9 @@ public class Car extends DrawableObject{
             gc.fillRect(-width/2, -height/2, width, height);
             gc.rotate(desiredDirection.getAngleInDegrees());
             
-            gc.setFont(new Font(20));
-            gc.setFill(Color.RED);
-            gc.fillText(Math.round(fitness*1000)/1000.0 + "", 0, 0);
+//            gc.setFont(new Font(20));
+//            gc.setFill(Color.RED);
+//            gc.fillText(Math.round(fitness*1000)/1000.0 + "", 0, 0);
             
             gc.translate(-centerPoint.getX(), -centerPoint.getY());
     }
@@ -279,7 +289,7 @@ public class Car extends DrawableObject{
         for(int i = 0;i<sensorVectors.length;i++) {
             inputLabels += "sensor " + i + ":";
         }
-        inputLabels+= "desired direction:direction:velocity";
+        inputLabels+= "desired direction:direction:velocity:next goal direction";
         
         String outputLabels = "accelerate:decelerate:turn left:turn right";
         NeuralNetworkVisualizer.visualizeNeuralNetwork(nameOfNeuralNetwork,inputLabels,outputLabels,gc, neuralNetwork, GUIController.getCanvasWidth(), GUIController.getCanvasHeight());

@@ -3,12 +3,8 @@ package graphics;
 import NeuralNetworkGroup.NeuralNetworkArtifact.Constants;
 import drawables.RaceTrack;
 import fileAndData.MapFileManager;
-import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
 
 public final class Renderer {
 

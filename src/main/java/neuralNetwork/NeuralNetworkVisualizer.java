@@ -2,12 +2,8 @@ package neuralNetwork;
 
 import java.util.ArrayList;
 
-import javax.imageio.event.IIOReadWarningListener;
-
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Polyline;
 import javafx.scene.text.Font;
 
 public interface NeuralNetworkVisualizer {
@@ -143,7 +139,7 @@ public interface NeuralNetworkVisualizer {
         
         int amountOfValues = fitnessValues.size();
         double wUnit = usedWidth/amountOfValues;
-        double maxValue = 200;
+        double maxValue = 600;
         
         int amountOfYTicks = 10;
         double hYTick = usedHeight/amountOfYTicks;

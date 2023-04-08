@@ -108,7 +108,7 @@ public interface NeuralNetworkFileManager {
 			scanner.nextLine();
 			for(int i = 0;i<nHiddenNodes;i++) {
 				for(int j = 0;j<nInputNodes;j++) {
-					float weightValue = Float.parseFloat(scanner.next());
+					double weightValue = Double.parseDouble(scanner.next());
 					neuralNetwork.weightMatrixHH[0].matrix[i][j] = weightValue;
 				}
 				scanner.nextLine();
@@ -120,7 +120,7 @@ public interface NeuralNetworkFileManager {
 					 scanner.nextLine();
 					 for(int i = 0;i<nHiddenNodes;i++) {
 						for(int j = 0;j<nHiddenNodes;j++) {
-							float weightValue = Float.parseFloat(scanner.next());
+						    double weightValue = Double.parseDouble(scanner.next());
 							neuralNetwork.weightMatrixHH[k].matrix[i][j] = weightValue;
 						}
 						scanner.nextLine();
@@ -131,7 +131,7 @@ public interface NeuralNetworkFileManager {
 			scanner.nextLine();
 			for(int i = 0;i<nOutputNodes;i++) {
 				for(int j = 0;j<nHiddenNodes;j++) {
-					float weightValue = Float.parseFloat(scanner.next());
+				    double weightValue = Double.parseDouble(scanner.next());
 					neuralNetwork.weightMatrixHH[nHiddenLayers].matrix[i][j] = weightValue;
 				}
 				scanner.nextLine();
@@ -141,7 +141,7 @@ public interface NeuralNetworkFileManager {
 			// Hidden * 1
 			scanner.nextLine();
 			for(int i = 0;i<nHiddenNodes;i++) {
-				float biasValue = Float.parseFloat(scanner.nextLine());
+			    double biasValue = Double.parseDouble(scanner.nextLine());
 				neuralNetwork.biasMatrixHH[0].matrix[i][0] = biasValue;
 			}
 			// Hidden * 1
@@ -149,7 +149,7 @@ public interface NeuralNetworkFileManager {
 				for(int k = 1;k<nHiddenLayers;k++) {
 					scanner.nextLine();
 					for(int i = 0;i<nHiddenNodes;i++) {
-						float biasValue = Float.parseFloat(scanner.nextLine());
+					    double biasValue = Double.parseDouble(scanner.nextLine());
 						neuralNetwork.biasMatrixHH[k].matrix[i][0] = biasValue;
 					}
 				}
@@ -157,7 +157,7 @@ public interface NeuralNetworkFileManager {
 			// Output * 1
 			scanner.nextLine();
 			for(int i = 0;i<nOutputNodes;i++) {
-				float biasValue = Float.parseFloat(scanner.nextLine());
+			    double biasValue = Double.parseDouble(scanner.nextLine());
 				neuralNetwork.biasMatrixHH[nHiddenLayers].matrix[i][0] = biasValue;
 			}
 			scanner.close();

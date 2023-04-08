@@ -12,7 +12,7 @@ public interface Constants {
     public static final Color TRACKLINE_COLOR = Color.WHITE;
     public static final Color GOALLINE_COLOR = Color.GREENYELLOW;
     
-    public static final Color CAR_COLOR = Color.BLUE;
+    public static final Color CAR_COLOR = new Color(40/255.0, 40/255.0, 40/255.0, 1);
     public static final Color CAR_CRASHED_COLOR = Color.RED;
     
     public static final double CAMERASPEED = 5;

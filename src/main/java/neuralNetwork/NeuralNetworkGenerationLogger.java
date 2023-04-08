@@ -45,6 +45,7 @@ public interface NeuralNetworkGenerationLogger {
     }
     
     public static void loadGenerationLog(String fileName) {
+        fitnessValues.clear();
         System.out.println("loading generation log...");
         try {
             File generationlogTextFile = new File(directory+fileName+"_log.txt");
