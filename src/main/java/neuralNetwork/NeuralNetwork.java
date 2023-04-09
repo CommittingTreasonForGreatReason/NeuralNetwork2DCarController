@@ -84,11 +84,11 @@ public class NeuralNetwork {
 		return outputMatrix;
 	}
 	
-	public static double sigmoidOne(double x) {
+	private static double sigmoidOne(double x) {
 		return 1/(1 + Math.exp(-x));
 	}
 	
-	public static Matrix sigmoidMatrix(Matrix m) {
+	private static Matrix sigmoidMatrix(Matrix m) {
 		for(int i = 0;i<m.rows;i++) {
 			for(int j = 0;j<m.colums;j++) {
 				m.matrix[i][j] = sigmoidOne(m.matrix[i][j]);

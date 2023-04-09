@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import vectors.Vector2;
 
 public interface NeuralNetworkVisualizer {
     
@@ -55,7 +56,6 @@ public interface NeuralNetworkVisualizer {
         if(outputLabels != null) {
             outputLabelStrings = outputLabels.split(":");
         }
-        
         // actually starts drawing 
         for(int i = 1;i<amountOfLayersTotal+1;i++) {
             if(i == 1) {
@@ -110,6 +110,7 @@ public interface NeuralNetworkVisualizer {
                 gc.fillText(nOutputNodes+"", border+wUnit*i-10, border+hUnitOutput*(nOutputNodes+1));
             }
         }
+        
     }
     
     private static void drawNeuronInput(GraphicsContext gc,double x, double y, double size, String label) {
