@@ -143,7 +143,9 @@ public interface NeuralNetworkVisualizer {
         double maxValue = 600;
         
         int amountOfYTicks = 10;
+        int amountOfXTicks = 10;
         double hYTick = usedHeight/amountOfYTicks;
+        double wXTick = usedWidth/amountOfXTicks;
         gc.setLineWidth(4);
         gc.setStroke(Color.WHITE);
         // stroke x-Axis
@@ -159,12 +161,22 @@ public interface NeuralNetworkVisualizer {
             gc.strokeLine(border-10, hYTick*i+border, border+10, hYTick*i+border);
             gc.fillText(Math.round(maxValue-(hYTick*i)/usedHeight*maxValue)+"", border-60, hYTick*i+border+20/3);
         }
-        gc.strokeLine(usedWidth+border, border+usedHeight-10, usedWidth+border, border+usedHeight+10);
-        gc.fillText(amountOfValues+"", usedWidth+border, border+usedHeight+20);
+        for(int i=0;i<amountOfXTicks+1;i++) {
+            gc.strokeLine(wXTick*i+border, border+usedHeight-10, wXTick*i+border, border+usedHeight+10);
+            gc.fillText(Math.round((wXTick*i)/usedWidth*amountOfValues)+"", wXTick*i+border, border+usedHeight+60);
+        }
         
+        //draw Grid
+        gc.setLineWidth(1);
+        for(int i=0;i<amountOfYTicks+1;i++) {
+            gc.strokeLine(border, hYTick*i+border, usedWidth+border, hYTick*i+border);
+        }
+        for(int i=0;i<amountOfXTicks+1;i++) {
+            gc.strokeLine(wXTick*i+border, border, wXTick*i+border, usedHeight+border);
+        }
         
-        
-        
+        // draw PolyLine (actual data)
+        gc.setLineWidth(2);
         double[] xPoints = new double[amountOfValues+1];
         double[] yPoints = new double[amountOfValues+1];
         xPoints[0]=border;
