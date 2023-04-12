@@ -28,7 +28,7 @@ public class RaceTrack extends DrawableObject{
     
     private ArrayList<Car> cars = new ArrayList<Car>();
     private Car bestCarLastGen = null;
-    private ArrayList<Line2D> trackLines;
+    private ArrayList<Line2D> trackLines = new ArrayList<Line2D>();
     private ArrayList<GoalLine> goalLines = new ArrayList<GoalLine>();
     private GoalLine editGoalLine = null;
     private boolean showGoalLines = true, showNeuralNetwork = false, showGenerationLogger = false, showHitbox = false, showSensors = false;
@@ -37,6 +37,8 @@ public class RaceTrack extends DrawableObject{
     private static final int generationKillCounterMax = 60;
     private static double generationKillCounter = 0;
     private boolean firstUpdate = false;
+    
+    private static final boolean editMode = true;
 
     private RaceTrack(Color baseColor) {
         super(baseColor, new Vector2(GUIController.getCanvasWidth()/2, GUIController.getCanvasHeight()/2));
@@ -183,6 +185,16 @@ public class RaceTrack extends DrawableObject{
     
     @Override
     public void update(double secondsSinceLastFrame) {
+    	minimap.update(secondsSinceLastFrame);
+    	if(cameraFollowCar) {
+            Car bestCar = getBestCar();
+            camera.follow((int)bestCar.getCenterX(), (int)bestCar.getCenterY());
+        }else {
+            camera.move(); 
+        }
+    	if(editMode) {
+    		return;
+    	}
     	
     	if(!firstUpdate) {
     		firstUpdate = true;
@@ -192,12 +204,7 @@ public class RaceTrack extends DrawableObject{
     		    startNewCarGeneration(true);
     		}
     	}
-        if(cameraFollowCar) {
-            Car bestCar = getBestCar();
-            camera.follow((int)bestCar.getCenterX(), (int)bestCar.getCenterY());
-        }else {
-            camera.move(); 
-        }
+        
         boolean allCarsCrashed = true;
         for(Car car : cars) {
             if(!car.isCrashed()) {
@@ -209,7 +216,7 @@ public class RaceTrack extends DrawableObject{
             }
             car.update(secondsSinceLastFrame);
         }
-        minimap.update(secondsSinceLastFrame);
+        
         if(allCarsCrashed) {
         	startNewCarGeneration(true);
         }

@@ -22,7 +22,7 @@ public final class Renderer {
     	gc = resizeableCanvas.getGraphicsContext2D();
     	raceTrack = RaceTrack.getRaceTrackInstance();
     	System.out.println("initialized Renderer:");
-    	MapFileManager.loadMap(raceTrack, Constants.STARTMAP);
+//    	MapFileManager.loadMap(raceTrack, Constants.STARTMAP);
     }
     
     public RaceTrack getRaceTrack() {
