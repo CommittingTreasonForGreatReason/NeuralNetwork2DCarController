@@ -150,6 +150,7 @@ public class RaceTrack extends DrawableObject{
         if(log) {
             bestCarLastGen = getBestCar();
             NeuralNetworkGenerationLogger.addFitnessValue(bestCarLastGen.getFitness());
+            NeuralNetworkGenerationLogger.addAverageFitnessValue(getAverageFitness());
         }
         cars.clear();
         spawnCars();
@@ -171,6 +172,15 @@ public class RaceTrack extends DrawableObject{
             }
         }
         return currentBestCar;
+    }
+    
+    private double getAverageFitness() {
+        double average = 0;
+        for(Car car : cars) {
+            average += car.getFitness();
+        }
+        average /= cars.size();
+        return average;
     }
     
     public void initTrackLines() {
@@ -240,7 +250,8 @@ public class RaceTrack extends DrawableObject{
             bestCarLastGen.drawNeuralNetwork(gc);
         }
         if(showGenerationLogger) {
-            NeuralNetworkVisualizer.visualizeGenerationLog(Car.getNameOfNeuralNetwork(), NeuralNetworkGenerationLogger.getFitnessValues(), gc, GUIController.getCanvasWidth(), GUIController.getCanvasHeight());
+            NeuralNetworkVisualizer.visualizeGenerationLog(Car.getNameOfNeuralNetwork(), NeuralNetworkGenerationLogger.getFitnessValues(),NeuralNetworkGenerationLogger.getAverageFitnessValues(),
+                    gc, GUIController.getCanvasWidth(), GUIController.getCanvasHeight());
         }
     }
     

@@ -130,7 +130,7 @@ public interface NeuralNetworkVisualizer {
         gc.fillOval(x-size/2, y-size/2, size, size);
     }
     
-    public static void visualizeGenerationLog(String name,ArrayList<Double> fitnessValues,GraphicsContext gc,double w, double h) {
+    public static void visualizeGenerationLog(String name,ArrayList<Double> fitnessValues,ArrayList<Double> averageFitnessValues,GraphicsContext gc,double w, double h) {
         drawBackGround(gc, w, h);
         gc.fillText(name, w/2, h/10);
         
@@ -167,6 +167,7 @@ public interface NeuralNetworkVisualizer {
         }
         
         //draw Grid
+        gc.setStroke(new Color(1, 1, 1, 0.5));
         gc.setLineWidth(1);
         for(int i=0;i<amountOfYTicks+1;i++) {
             gc.strokeLine(border, hYTick*i+border, usedWidth+border, hYTick*i+border);
@@ -176,6 +177,7 @@ public interface NeuralNetworkVisualizer {
         }
         
         // draw PolyLine (actual data)
+        // peak fitnessvalues
         gc.setLineWidth(2);
         double[] xPoints = new double[amountOfValues+1];
         double[] yPoints = new double[amountOfValues+1];
@@ -186,6 +188,18 @@ public interface NeuralNetworkVisualizer {
             yPoints[i+1] = border+usedHeight-fitnessValues.get(i)/maxValue*usedHeight;
         }
         gc.setStroke(Color.ORANGERED);
+        gc.strokePolyline(xPoints, yPoints, amountOfValues+1);
+        
+        // peak averagevalues
+        xPoints = new double[amountOfValues+1];
+        yPoints = new double[amountOfValues+1];
+        xPoints[0]=border;
+        yPoints[0]=border+usedHeight;
+        for(int i=0;i<amountOfValues;i++) {
+            xPoints[i+1] = border+wUnit*(i+1);
+            yPoints[i+1] = border+usedHeight-averageFitnessValues.get(i)/maxValue*usedHeight;
+        }
+        gc.setStroke(Color.GREEN);
         gc.strokePolyline(xPoints, yPoints, amountOfValues+1);
     }
 }
