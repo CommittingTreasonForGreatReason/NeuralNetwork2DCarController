@@ -38,7 +38,7 @@ public class RaceTrack extends DrawableObject{
     private static double generationKillCounter = 0;
     private boolean firstUpdate = false;
     
-    private static final boolean editMode = true;
+    private static final boolean editMode = false;
 
     private RaceTrack(Color baseColor) {
         super(baseColor, new Vector2(GUIController.getCanvasWidth()/2, GUIController.getCanvasHeight()/2));
